@@ -11,6 +11,9 @@ import { endBossFight } from './stage.js';
 import { bindUI } from './effects.js';
 import {
   updateGoldDisplay,
+  updateGemDisplay,
+  updatePlayerLv,
+  updateIdleTimer,
   renderUpgrades,
   refreshUpgradeButtons,
   updateStageDisplay,
@@ -52,6 +55,9 @@ function gameLoop(now) {
     }
   }
 
+  // 放置タイマー (見た目用)
+  state.idleSeconds += dt;
+
   // 敵の移動
   updateEnemies(dt);
 
@@ -82,7 +88,10 @@ function init() {
   bindUI(updateGoldDisplay);
 
   setPlayerY();
+  updatePlayerLv();
   updateGoldDisplay();
+  updateGemDisplay();
+  updateIdleTimer();
   updateStageDisplay();
   updateAutoButton();
   renderUpgrades();
@@ -93,6 +102,8 @@ function init() {
 
   // ゴールドが増えたら買えるようになったボタンを有効化
   setInterval(refreshUpgradeButtons, 200);
+  // 放置タイマー (見た目用) は1秒ごとに更新
+  setInterval(updateIdleTimer, 1000);
 
   requestAnimationFrame(gameLoop);
 }

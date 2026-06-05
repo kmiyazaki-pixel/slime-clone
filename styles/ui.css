@@ -1,223 +1,214 @@
-/* ========= 上部ステータスバー ========= */
-.status-bar {
-  background: linear-gradient(180deg, #1e293b, #0f172a);
-  padding: 10px 14px;
+/* ============================================================
+   1. 上部ステータスバー
+   ============================================================ */
+.top-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  padding: 10px 10px 8px;
+  background: linear-gradient(180deg, #1e293b, #0a0f1e);
   border-bottom: 3px solid #000;
   z-index: 10;
-}
-
-.gold-display {
-  background: linear-gradient(180deg, #fde047, #f59e0b);
-  border: 2px solid #92400e;
-  border-radius: 999px;
-  padding: 6px 16px 6px 38px;
-  font-weight: 900;
-  color: #422006;
   position: relative;
-  font-size: 17px;
-  box-shadow: 0 3px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.gold-display::before {
-  content: '';
-  position: absolute;
-  left: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 26px;
-  height: 26px;
-  background: radial-gradient(circle at 30% 30%,
-    #fef9c3, #f59e0b 70%, #92400e);
+/* プレイヤーLvバッジ */
+.player-badge {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(circle at 35% 28%, #fef08a, #f59e0b 55%, #b45309);
+  border: 2px solid #7c2d12;
   border-radius: 50%;
-  border: 2px solid #78350f;
-}
-
-.stage-label {
-  background: linear-gradient(180deg, #ffffff, #f1f5f9);
-  border: 2px solid #1e293b;
-  border-radius: 999px;
-  padding: 4px 16px;
-  font-family: 'DotGothic16', monospace;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-left: auto;
-  letter-spacing: 1px;
-  box-shadow: 0 3px 0 #475569, inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-/* ========= アクションバー (AUTO + 進捗) ========= */
-.action-bar {
-  display: flex;
-  gap: 8px;
-  padding: 8px 10px;
-  background: var(--ui-card);
-  border-bottom: 2px solid #000;
-  align-items: stretch;
-}
-
-.auto-toggle {
-  background: linear-gradient(180deg, #f59e0b, #b45309);
-  border: 2px solid #92400e;
-  color: #fff;
-  font-family: 'DotGothic16', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 3px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  white-space: nowrap;
-  min-width: 60px;
-  text-align: center;
-  line-height: 1.2;
-  letter-spacing: 1px;
-  transition: transform 0.05s, box-shadow 0.05s;
-}
-
-.auto-toggle:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.auto-toggle.off {
-  background: linear-gradient(180deg, #64748b, #475569);
-  border-color: #334155;
-  box-shadow: 0 3px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.auto-toggle.off:active {
-  box-shadow: 0 1px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.stage-progress {
-  flex: 1;
-  background: var(--ui-bg);
-  border: 2px solid #000;
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
-  min-height: 32px;
-}
-
-.stage-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #4ade80, #22c55e);
-  transition: width 0.25s ease-out;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.stage-progress-text {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
+  font-weight: 900;
   color: #fff;
-  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
-}
-
-/* ========= 強化パネル ========= */
-.upgrades {
-  background: var(--ui-card);
-  padding: 10px;
-  max-height: 42vh;
-  overflow-y: auto;
-  border-top: 2px solid #000;
-}
-
-.upgrades::-webkit-scrollbar {
-  width: 6px;
-}
-
-.upgrades::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 3px;
-}
-
-.upgrade-row {
-  background: linear-gradient(180deg, #475569, #334155);
-  border: 2px solid #000;
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.upg-icon {
-  width: 46px;
-  height: 46px;
-  background: linear-gradient(180deg, #6366f1, #4338ca);
-  border: 2px solid #312e81;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
+  text-shadow: 1px 1px 0 #422006;
+  font-size: 17px;
+  box-shadow: 0 3px 0 #422006, inset 0 1px 0 rgba(255, 255, 255, 0.55);
   flex-shrink: 0;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  margin-top: 4px;
 }
 
-.upg-info {
-  flex: 1;
+.player-crown {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 11px;
+  background: linear-gradient(180deg, #fef08a, #f59e0b);
+  filter: drop-shadow(0 1px 0 #422006);
+  clip-path:
+    polygon(0% 100%, 0% 55%, 18% 80%, 32% 0%, 50% 75%, 68% 0%, 82% 80%, 100% 55%, 100% 100%);
+}
+
+/* 通貨表示 (ゴールド / ジェム) */
+.currency {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #1e293b, #0a0f1e);
+  border: 2px solid #000;
+  border-radius: 999px;
+  padding: 2px 10px 2px 2px;
+  font-weight: 900;
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 2px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.12);
   min-width: 0;
 }
 
-.upg-name  { font-weight: 700; font-size: 14px; color: #f1f5f9; }
-.upg-stat  { font-size: 12px; color: #cbd5e1; margin-top: 1px; }
-.upg-level { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+.currency span {
+  text-shadow: 1px 1px 0 #000;
+  white-space: nowrap;
+}
 
-.upg-btn {
-  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-  border: 2px solid #1e3a8a;
-  color: #fff;
-  padding: 8px 12px;
-  font-weight: 900;
-  font-family: inherit;
+.currency-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.coin-icon {
+  background: radial-gradient(circle at 30% 28%, #fef9c3, #f59e0b 70%, #92400e);
+  border: 2px solid #78350f;
+}
+
+.gem-icon {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(180deg, #f0abfc, #c026d3 60%, #86198f);
+  border: 2px solid #581c87;
+  border-radius: 4px;
+  transform: rotate(45deg);
+  margin: 2px 4px 2px 4px;
+}
+
+.gold-display {
+  /* 上書き: 古い gold-display スタイルを無効化 */
+  position: relative;
+  padding: 2px 10px 2px 2px;
+}
+.gold-display::before { content: none; }
+
+/* 右側のアクションボタン群 */
+.top-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.top-btn {
+  position: relative;
+  width: 40px;
+  height: 30px;
   border-radius: 8px;
+  border: 2px solid #000;
+  background: linear-gradient(180deg, #475569, #1e293b);
   cursor: pointer;
-  box-shadow: 0 3px 0 #1e3a8a, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  box-shadow: 0 2px 0 #000;
+}
+
+.top-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
+
+.video-btn {
+  background: linear-gradient(180deg, #ef4444, #991b1b);
+  border-color: #450a0a;
+}
+.video-btn::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid #fff;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+.video-btn span {
+  margin-left: 11px;
   font-size: 12px;
-  min-width: 86px;
-  text-align: center;
-  transition: transform 0.05s, box-shadow 0.05s;
-  line-height: 1.2;
+  text-shadow: 1px 1px 0 #450a0a;
 }
 
-.upg-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #1e3a8a, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+.mail-btn::before {
+  content: '';
+  width: 18px;
+  height: 12px;
+  background: linear-gradient(180deg, #fde68a, #f59e0b);
+  border: 1.5px solid #422006;
+  border-radius: 2px;
+  position: relative;
+}
+.mail-btn::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 8px;
+  background: transparent;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 6px solid #f59e0b;
+  top: 9px;
+  filter: drop-shadow(0 0 0 #422006);
 }
 
-.upg-btn:disabled {
-  background: linear-gradient(180deg, #64748b, #475569);
-  border-color: #334155;
-  color: #94a3b8;
-  box-shadow: 0 3px 0 #334155;
-  cursor: not-allowed;
+.settings-btn::before {
+  content: '⚙';
+  font-size: 19px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
 }
 
-.upg-cost {
-  font-size: 11px;
-  opacity: 0.9;
-  margin-top: 2px;
+/* ============================================================
+   2. 戦場オーバーレイ (ステージ / 放置 / クエスト / 左スキル)
+   ============================================================ */
+
+/* ステージ表示 (中央上) */
+.stage-banner {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 56%;
+  max-width: 220px;
+  pointer-events: none;
 }
 
-/* ========= ボス: ステージラベル ========= */
-.stage-label.boss {
+.stage-name-pill {
+  background: linear-gradient(180deg, #ffffff, #e2e8f0);
+  border: 2px solid #1e293b;
+  border-radius: 999px;
+  padding: 2px 14px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  box-shadow: 0 2px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.stage-name-pill.boss {
   background: linear-gradient(180deg, #f87171, #b91c1c);
   border-color: #7f1d1d;
   color: #fff;
   text-shadow: 1px 1px 0 #450a0a;
-  box-shadow: 0 3px 0 #7f1d1d, inset 0 1px 0 rgba(255, 255, 255, 0.4);
   animation: stageLabelBossPulse 0.9s ease-in-out infinite;
 }
 
@@ -226,21 +217,697 @@
   50%      { transform: scale(1.06); }
 }
 
-/* ボス戦中の進捗バーは赤くする (バー自体は満タン固定) */
-.stage-progress-bar.boss {
+.stage-bar-wrap {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 2px solid #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.stage-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(180deg, #67e8f9, #0284c7);
+  transition: width 0.25s ease-out;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.stage-bar.boss {
   background: linear-gradient(90deg, #f87171, #dc2626);
 }
 
-/* ========= ボスタイマー (戦場上部にオーバーレイ) ========= */
-.boss-timer {
+.stage-progress-mini {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  letter-spacing: 1px;
+}
+
+/* 放置タイマー (左上) */
+.idle-card {
   position: absolute;
   top: 8px;
   left: 8px;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.78);
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 3px 8px 3px 5px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.idle-card-icon {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 28%, #fef9c3, #f59e0b 70%, #92400e);
+  border: 1.5px solid #78350f;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.idle-card-bar { display: none; }
+
+.idle-card-time {
+  font-family: 'DotGothic16', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 1px;
+}
+
+/* クエストカード (右上) */
+.quest-card {
+  position: absolute;
+  top: 8px;
   right: 8px;
+  z-index: 11;
+  width: 102px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.78));
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 4px 6px 6px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.quest-head {
+  font-family: 'DotGothic16', monospace;
+  font-size: 10px;
+  color: #fcd34d;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.quest-body {
+  font-size: 10px;
+  color: #fff;
+  margin: 2px 0 4px;
+  line-height: 1.25;
+  font-weight: 700;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.quest-reward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #f0abfc, #a855f7 55%, #6b21a8);
+  border: 1.5px solid #4c1d95;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.quest-reward-icon {
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(180deg, #fce7f3, #ec4899);
+  border: 1px solid #500724;
+  transform: rotate(45deg);
+}
+
+/* 左側スキルカラム (見た目だけ) */
+.side-skills {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-15%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.side-skill {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #1a0f04;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.55), inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.ss-1 { background: radial-gradient(circle at 30% 25%, #fda4af, #be123c 60%, #4c0519); }
+.ss-2 { background: radial-gradient(circle at 30% 25%, #a7f3d0, #047857 60%, #064e3b); }
+.ss-3 { background: radial-gradient(circle at 30% 25%, #93c5fd, #1d4ed8 60%, #1e3a8a); }
+
+.side-skill::before {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6));
+}
+.ss-1::before { content: '✊'; }
+.ss-2::before { content: '☄'; color: #fde047; }
+.ss-3::before { content: '⚡'; color: #fde047; }
+
+/* ============================================================
+   3. アクションバー (円形ボタンの横並び)
+   ============================================================ */
+.action-bar {
+  display: flex;
+  gap: 4px;
+  padding: 7px 8px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border-top: 3px solid var(--frame);
+  border-bottom: 3px solid var(--frame);
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.action-bar::-webkit-scrollbar { display: none; }
+
+.action-btn {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 3px solid #1a0f04;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.6), inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DotGothic16', monospace;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.action-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.auto-toggle {
+  background: radial-gradient(circle at 30% 25%, #fef08a, #f59e0b 55%, #b45309);
+  border-color: #78350f;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-shadow: 1px 1px 0 #78350f;
+  letter-spacing: 1px;
+  line-height: 1.05;
+}
+
+.auto-toggle .auto-text {
+  display: block;
+  text-align: center;
+}
+
+.auto-toggle.off {
+  background: radial-gradient(circle at 30% 25%, #cbd5e1, #64748b 55%, #1e293b);
+  border-color: #334155;
+  text-shadow: 1px 1px 0 #1e293b;
+}
+
+.skill-btn { background: radial-gradient(circle at 30% 25%, #cbd5e1, #64748b 55%, #1e293b); }
+.skill-btn::before {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+.skill-btn.s-power {
+  background: radial-gradient(circle at 30% 25%, #fed7aa, #c2410c 55%, #7c2d12);
+  border-color: #431407;
+}
+.skill-btn.s-power::before { content: '✊'; }
+
+.skill-btn.s-aim {
+  background: radial-gradient(circle at 30% 25%, #c7d2fe, #4338ca 55%, #1e1b4b);
+}
+.skill-btn.s-aim::before { content: '◎'; color: #fff; font-size: 22px; }
+
+.skill-btn.s-active {
+  background: radial-gradient(circle at 30% 25%, #fef08a, #ca8a04 55%, #713f12);
+  border-color: #422006;
+  box-shadow: 0 3px 0 #422006, 0 0 14px rgba(250, 204, 21, 0.65),
+              inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+}
+.skill-btn.s-active::before {
+  content: '';
+  width: 24px;
+  height: 22px;
+  background: radial-gradient(ellipse at 35% 30%, #86efac, #4ade80 50%, #16a34a);
+  border: 2px solid #14532d;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+}
+
+.skill-btn.s-buff {
+  background: radial-gradient(circle at 30% 25%, #f0abfc, #a855f7 55%, #6b21a8);
+  border-color: #3b0764;
+}
+.skill-btn.s-buff::before { content: '✚'; color: #fff; font-size: 22px; font-weight: 900; }
+
+.skill-btn.locked {
+  background: linear-gradient(180deg, #475569, #1e293b);
+  border-color: #0a0f1e;
+}
+.skill-btn.locked::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 12px;
+  background: linear-gradient(180deg, #cbd5e1, #64748b);
+  border: 2px solid #0a0f1e;
+  border-radius: 2px;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.skill-btn.locked::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border: 3px solid #cbd5e1;
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  background: transparent;
+}
+
+/* ============================================================
+   4. 強化パネル
+   ============================================================ */
+.upgrade-panel {
+  background: linear-gradient(180deg, #6b4f37, #4a3526);
+  border-top: 3px solid var(--frame);
+  border-bottom: 3px solid var(--frame);
+  padding: 6px 10px 6px;
+  flex: 0 0 auto;
+  max-height: 42vh;
+  min-height: 180px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.upgrade-currency-row {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 5px;
+}
+
+.up-currency {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.25));
+  border: 2px solid #1a0f04;
+  border-radius: 999px;
+  padding: 2px 14px 2px 3px;
+  font-weight: 900;
+  color: #fff;
+  font-size: 14px;
+  text-shadow: 1px 1px 0 #000;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.up-currency-icon {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle at 30% 28%, #fed7aa, #ea580c 60%, #7c2d12);
+  border: 2px solid #7c2d12;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+.up-currency-icon::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  border-radius: 50%;
+}
+
+.upgrades {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 2px;
+  min-height: 0;
+}
+
+.upgrades::-webkit-scrollbar { width: 5px; }
+.upgrades::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+}
+
+.upgrade-row {
+  background: linear-gradient(180deg, var(--upgrade-bg-1), var(--upgrade-bg-2));
+  border: 2px solid #1e293b;
+  border-radius: 14px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 3px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.upg-icon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.upg-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(180deg, #94a3b8, #475569);
+  border: 2px solid #1e293b;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.up-attack .upg-icon {
+  background: linear-gradient(180deg, #fb923c, #c2410c);
+  border-color: #7c2d12;
+}
+
+.up-fireRate .upg-icon {
+  background: linear-gradient(180deg, #c084fc, #7e22ce);
+  border-color: #4c1d95;
+}
+
+.upg-level {
+  font-family: 'DotGothic16', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.65);
+  padding: 0 6px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+}
+
+.upg-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.upg-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.upg-value {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-top: 2px;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+}
+
+.upg-substat { display: none; }
+
+.upg-btn {
+  background: linear-gradient(180deg, #86efac, #15803d);
+  border: 2px solid #14532d;
+  color: #fff;
+  border-radius: 12px;
+  padding: 6px 10px 4px;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  min-width: 78px;
+  text-align: center;
+  box-shadow: 0 3px 0 #14532d, inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.05s, box-shadow 0.05s;
+  text-shadow: 1px 1px 0 #064e3b;
+  flex-shrink: 0;
+}
+
+.upg-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #14532d, inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.upg-btn:disabled {
+  background: linear-gradient(180deg, #94a3b8, #475569);
+  border-color: #334155;
+  color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: 0 3px 0 #334155;
+  text-shadow: none;
+}
+
+.upg-btn-label {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.upg-cost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-top: 2px;
+}
+
+.upg-cost-icon {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  background: radial-gradient(circle at 30% 30%, #fef9c3, #f59e0b 70%, #92400e);
+  border: 1px solid #78350f;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   5. 下部ナビゲーション
+   ============================================================ */
+.bottom-nav {
+  display: flex;
+  background: linear-gradient(180deg, #6b4f37, #3e2c1c);
+  border-top: 3px solid var(--frame);
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  flex: 1;
+  background: linear-gradient(180deg, #8b6f4d, #4a3526);
+  border: 2px solid var(--frame);
+  border-radius: 12px;
+  height: 50px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 3px 0 var(--frame-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--frame-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn.active {
+  background: linear-gradient(180deg, #fef08a, #ca8a04);
+  border-color: #78350f;
+  box-shadow: 0 3px 0 #78350f, 0 0 14px rgba(251, 191, 36, 0.55),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.nav-icon {
+  width: 30px;
+  height: 30px;
+  position: relative;
+}
+
+/* スライム (緑のスライム形) */
+.nav-hero {
+  background: radial-gradient(ellipse at 35% 28%, #86efac, #4ade80 50%, #16a34a);
+  border: 2px solid #14532d;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  width: 28px;
+  height: 24px;
+  margin-top: 4px;
+}
+.nav-hero::before,
+.nav-hero::after {
+  content: '';
+  position: absolute;
+  top: 30%;
+  width: 4px;
+  height: 6px;
+  background: #14532d;
+  border-radius: 50%;
+}
+.nav-hero::before { left: 24%; }
+.nav-hero::after { right: 24%; }
+
+/* ペット (赤いペット) */
+.nav-pet {
+  background: radial-gradient(ellipse at 35% 28%, #fda4af, #f43f5e 50%, #be123c);
+  border: 2px solid #881337;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+}
+.nav-pet::before {
+  content: '';
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: -6px 0 0 #fff, 6px 0 0 #fff;
+}
+
+/* ダンジョン (城) */
+.nav-dungeon {
+  background: linear-gradient(180deg, #cbd5e1, #64748b);
+  border: 2px solid #1e293b;
+  width: 28px;
+  height: 22px;
+  border-radius: 2px;
+  clip-path: polygon(
+    0 35%, 12% 35%, 12% 0%, 28% 0%, 28% 35%, 44% 35%,
+    44% 0%, 60% 0%, 60% 35%, 76% 35%, 76% 0%, 92% 0%, 92% 35%, 100% 35%,
+    100% 100%, 0 100%
+  );
+}
+
+/* 鍛冶 (ハンマー) */
+.nav-forge {
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 28px;
+}
+.nav-forge::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 11px;
+  background: linear-gradient(180deg, #e2e8f0, #64748b);
+  border: 2px solid #1e293b;
+  border-radius: 3px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+.nav-forge::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  width: 5px;
+  height: 14px;
+  background: linear-gradient(180deg, #a16207, #78350f);
+  border: 1.5px solid #422006;
+  border-radius: 2px;
+}
+
+/* ショップ (屋根) */
+.nav-shop {
+  width: 30px;
+  height: 24px;
+  margin-top: 3px;
+}
+.nav-shop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 11px;
+  background: repeating-linear-gradient(90deg,
+    #ef4444 0 5px, #fff 5px 10px);
+  border: 2px solid #7f1d1d;
+  border-radius: 4px 4px 0 0;
+}
+.nav-shop::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #fef3c7, #fbbf24);
+  border: 2px solid #78350f;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+}
+
+.nav-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  background: #ef4444;
+  border: 1.5px solid #7f1d1d;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+  z-index: 2;
+}
+
+/* ============================================================
+   6. ボス戦UI (Phase 2-B)
+   ============================================================ */
+
+/* ボスタイマー (戦場上部にオーバーレイ) */
+.boss-timer {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 260px;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.88);
   border: 2px solid #000;
   border-radius: 10px;
   padding: 6px 10px;
@@ -287,16 +954,14 @@
   animation: bossTimerUrgent 0.4s ease-in-out infinite;
 }
 
-.boss-timer.urgent .boss-timer-text {
-  color: #fca5a5;
-}
+.boss-timer.urgent .boss-timer-text { color: #fca5a5; }
 
 @keyframes bossTimerUrgent {
   0%, 100% { background: rgba(15, 23, 42, 0.85); }
   50%      { background: rgba(220, 38, 38, 0.85); }
 }
 
-/* ========= ボス再挑戦ボタン (画面右の浮きボタン) ========= */
+/* ボス再挑戦ボタン */
 .boss-retry-btn {
   position: absolute;
   right: 12px;
@@ -305,7 +970,7 @@
   border: 2px solid #4c1d95;
   color: #fff;
   font-family: 'DotGothic16', monospace;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   padding: 10px 14px;
   border-radius: 12px;

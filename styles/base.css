@@ -15,6 +15,18 @@
   --ui-card: #1e293b;
   --ui-text: #f1f5f9;
   --accent: #facc15;
+
+  /* 追加: 新レイアウト用 */
+  --frame: #2a1a08;
+  --frame-shadow: #1a0f04;
+  --panel: #4a3526;
+  --panel-light: #6b4f37;
+  --btn-circle: #5a4530;
+  --btn-circle-dark: #3a2a1a;
+  --gem: #d946ef;
+  --gem-dark: #86198f;
+  --upgrade-bg-1: #cbd5e1;
+  --upgrade-bg-2: #94a3b8;
 }
 
 * {
@@ -28,7 +40,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: 'M PLUS Rounded 1c', sans-serif;
-  background: var(--ui-bg);
+  background: #1c1410;
   color: var(--ui-text);
   user-select: none;
   -webkit-user-select: none;
@@ -40,7 +52,7 @@ html, body {
   height: 100vh;
   max-width: 480px;
   margin: 0 auto;
-  background: var(--ui-bg);
+  background: var(--frame);
   position: relative;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }

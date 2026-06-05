@@ -15,14 +15,68 @@
 </head>
 <body>
 <div id="app">
-  <div class="status-bar">
-    <div class="gold-display" id="goldDisplay">0</div>
-    <div class="stage-label" id="stageLabel">1-1</div>
-  </div>
+
+  <!-- ========= 1. 上部ステータスバー ========= -->
+  <header class="top-bar">
+    <div class="player-badge">
+      <div class="player-crown"></div>
+      <div class="player-lv" id="playerLv">1</div>
+    </div>
+    <div class="currency gold-display">
+      <div class="currency-icon coin-icon"></div>
+      <span id="goldDisplay">0</span>
+    </div>
+    <div class="currency gem-display">
+      <div class="currency-icon gem-icon"></div>
+      <span id="gemDisplay">0</span>
+    </div>
+    <div class="top-actions">
+      <button class="top-btn video-btn"><span>×2</span></button>
+      <button class="top-btn mail-btn"></button>
+      <button class="top-btn settings-btn"></button>
+    </div>
+  </header>
+
+  <!-- ========= 2. 戦場 ========= -->
   <div class="battlefield" id="battlefield">
+
+    <!-- 放置タイマー (左上) -->
+    <div class="idle-card">
+      <div class="idle-card-icon"></div>
+      <div class="idle-card-bar"></div>
+      <div class="idle-card-time" id="idleTimer">00:00:00</div>
+    </div>
+
+    <!-- ステージ表示 (中央上) -->
+    <div class="stage-banner" id="stageBanner">
+      <div class="stage-bar-wrap">
+        <div class="stage-bar" id="stageProgressBar"></div>
+      </div>
+      <div class="stage-name-pill" id="stageLabel">STAGE 1-1</div>
+      <div class="stage-progress-mini" id="stageProgressText">0 / 5</div>
+    </div>
+
+    <!-- クエストカード (右上) -->
+    <div class="quest-card">
+      <div class="quest-head">クエスト 1</div>
+      <div class="quest-body">ステージを<br>クリアする</div>
+      <div class="quest-reward">
+        <div class="quest-reward-icon"></div>
+        <span>100</span>
+      </div>
+    </div>
+
+    <!-- 左側スキルカラム (見た目だけ) -->
+    <aside class="side-skills">
+      <button class="side-skill ss-1"></button>
+      <button class="side-skill ss-2"></button>
+      <button class="side-skill ss-3"></button>
+    </aside>
+
+    <!-- プレイヤー -->
     <div class="slime" id="slime"></div>
 
-    <!-- ボスタイマー (戦場上部にオーバーレイ) -->
+    <!-- ボスタイマー (中央上、ボス戦中のみ表示) -->
     <div class="boss-timer" id="bossTimer" hidden>
       <div class="boss-timer-label">BOSS</div>
       <div class="boss-timer-bar-wrap">
@@ -37,14 +91,50 @@
     <!-- ボス再挑戦ボタン (画面右の浮きボタン) -->
     <button class="boss-retry-btn" id="bossRetryBtn" hidden>BOSS<br>再挑戦</button>
   </div>
+
+  <!-- ========= 3. アクションバー (円形ボタン横並び) ========= -->
   <div class="action-bar">
-    <button class="auto-toggle" id="autoToggle">AUTO<br>ON</button>
-    <div class="stage-progress">
-      <div class="stage-progress-bar" id="stageProgressBar"></div>
-      <div class="stage-progress-text" id="stageProgressText">0/5</div>
-    </div>
+    <button class="action-btn auto-toggle" id="autoToggle">
+      <span class="auto-text">AUTO<br>ON</span>
+    </button>
+    <button class="action-btn skill-btn s-power"></button>
+    <button class="action-btn skill-btn s-aim"></button>
+    <button class="action-btn skill-btn s-active"></button>
+    <button class="action-btn skill-btn s-buff"></button>
+    <button class="action-btn skill-btn locked"></button>
+    <button class="action-btn skill-btn locked"></button>
   </div>
-  <div class="upgrades" id="upgrades"></div>
+
+  <!-- ========= 4. 強化パネル ========= -->
+  <section class="upgrade-panel">
+    <div class="upgrade-currency-row">
+      <div class="up-currency">
+        <div class="up-currency-icon"></div>
+        <span id="upgradeGold">0</span>
+      </div>
+    </div>
+    <div class="upgrades" id="upgrades"></div>
+  </section>
+
+  <!-- ========= 5. 下部ナビゲーション ========= -->
+  <nav class="bottom-nav">
+    <button class="nav-btn" data-tab="hero">
+      <div class="nav-icon nav-hero"></div>
+    </button>
+    <button class="nav-btn" data-tab="pet">
+      <div class="nav-icon nav-pet"></div>
+    </button>
+    <button class="nav-btn" data-tab="dungeon">
+      <div class="nav-icon nav-dungeon"></div>
+    </button>
+    <button class="nav-btn active" data-tab="forge">
+      <div class="nav-icon nav-forge"></div>
+    </button>
+    <button class="nav-btn" data-tab="shop">
+      <div class="nav-icon nav-shop"></div>
+      <div class="nav-dot"></div>
+    </button>
+  </nav>
 </div>
 
 <script type="module" src="src/main.js"></script>

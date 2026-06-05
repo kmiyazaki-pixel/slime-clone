@@ -5,6 +5,13 @@
 export const state = {
   // 資源
   gold: 0,
+  gems: 0,             // ジェム (将来用、いまは表示のみ)
+
+  // プレイヤー (見た目用)
+  playerLv: 1,
+
+  // 放置時間 (秒、ゲーム起動からの経過)
+  idleSeconds: 0,
 
   // ステータス
   attack: 1,

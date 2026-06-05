@@ -5,11 +5,16 @@
 import { state } from './state.js';
 import { CONFIG } from './config.js';
 import {
+  $playerLv,
   $goldDisplay,
+  $gemDisplay,
   $upgrades,
+  $upgradeGold,
+  $stageBanner,
   $stageLabel,
   $stageProgressBar,
   $stageProgressText,
+  $idleTimer,
   $autoToggle,
   $bossTimer,
   $bossTimerBar,
@@ -20,15 +25,43 @@ import {
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
 
-// ゴールド表示を最新値に更新
+// ゴールド表示を最新値に更新 (上部バーと強化パネル上の両方)
 export function updateGoldDisplay() {
-  $goldDisplay.textContent = formatNum(state.gold);
+  const v = formatNum(state.gold);
+  $goldDisplay.textContent = v;
+  $upgradeGold.textContent = v;
+}
+
+// ジェム表示 (見た目だけ)
+export function updateGemDisplay() {
+  $gemDisplay.textContent = formatNum(state.gems);
+}
+
+// プレイヤーLv表示 (見た目だけ)
+export function updatePlayerLv() {
+  $playerLv.textContent = state.playerLv;
+}
+
+// 放置時間表示 (HH:MM:SS)
+export function updateIdleTimer() {
+  const total = Math.floor(state.idleSeconds);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  $idleTimer.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
 // 強化項目ごとの現在値ラベル
 function getStatLabel(key) {
-  if (key === 'attack')   return `ダメージ: ${formatNum(state.attack)}`;
-  if (key === 'fireRate') return `間隔: ${state.shotInterval.toFixed(0)}ms`;
+  if (key === 'attack')   return formatNum(state.attack);
+  if (key === 'fireRate') return `${state.shotInterval.toFixed(0)}ms`;
+  return '';
+}
+
+function getStatName(key) {
+  if (key === 'attack')   return 'ダメージ';
+  if (key === 'fireRate') return '攻撃間隔';
   return '';
 }
 
@@ -40,17 +73,22 @@ export function renderUpgrades() {
     const canAfford = state.gold >= cost;
 
     const row = document.createElement('div');
-    row.className = 'upgrade-row';
+    row.className = `upgrade-row up-${key}`;
     row.innerHTML = `
-      <div class="upg-icon">${u.icon}</div>
+      <div class="upg-icon-wrap">
+        <div class="upg-icon">${u.icon}</div>
+        <div class="upg-level">Lv ${u.level}</div>
+      </div>
       <div class="upg-info">
         <div class="upg-name">${u.name}</div>
-        <div class="upg-stat">${getStatLabel(key)}</div>
-        <div class="upg-level">Lv. ${u.level}</div>
+        <div class="upg-value">${getStatLabel(key)}</div>
+        <div class="upg-substat">${getStatName(key)}</div>
       </div>
       <button class="upg-btn" ${canAfford ? '' : 'disabled'} data-key="${key}">
-        <div>強化</div>
-        <div class="upg-cost">${formatNum(cost)} G</div>
+        <div class="upg-btn-label">強化</div>
+        <div class="upg-cost">
+          <span class="upg-cost-icon"></span>${formatNum(cost)}
+        </div>
       </button>
     `;
     $upgrades.appendChild(row);
@@ -82,16 +120,16 @@ export function refreshUpgradeButtons() {
   });
 }
 
-// ステージ表示を更新 (バッジ + 進捗バー)
+// ステージ表示を更新 (ラベル + 進捗バー)
 export function updateStageDisplay() {
   if (state.inBossFight) {
     $stageLabel.textContent = `BOSS ${state.world}`;
     $stageLabel.classList.add('boss');
-    $stageProgressText.textContent = 'BOSS FIGHT';
+    $stageProgressText.textContent = 'BOSS';
     $stageProgressBar.style.width = '100%';
     $stageProgressBar.classList.add('boss');
   } else {
-    $stageLabel.textContent = `${state.world}-${state.stage}`;
+    $stageLabel.textContent = `STAGE ${state.world}-${state.stage}`;
     $stageLabel.classList.remove('boss');
     $stageProgressText.textContent = `${state.killsInStage} / ${state.killsRequired}`;
     const ratio = Math.min(1, state.killsInStage / state.killsRequired);
@@ -102,11 +140,12 @@ export function updateStageDisplay() {
 
 // AUTO ボタンの見た目を state に合わせる
 export function updateAutoButton() {
+  const span = $autoToggle.querySelector('.auto-text');
   if (state.autoProgress) {
-    $autoToggle.innerHTML = 'AUTO<br>ON';
+    span.innerHTML = 'AUTO<br>ON';
     $autoToggle.classList.remove('off');
   } else {
-    $autoToggle.innerHTML = 'AUTO<br>OFF';
+    span.innerHTML = 'AUTO<br>OFF';
     $autoToggle.classList.add('off');
   }
 }
@@ -121,7 +160,6 @@ export function updateBossTimer() {
   $bossTimerText.textContent = Math.ceil(remain);
   const ratio = remain / CONFIG.BOSS.TIMER_SECONDS;
   $bossTimerBar.style.width = (ratio * 100) + '%';
-  // 残り5秒で赤く点滅
   if (remain <= 5) {
     $bossTimer.classList.add('urgent');
   } else {
@@ -131,11 +169,14 @@ export function updateBossTimer() {
 
 export function showBossTimer() {
   $bossTimer.hidden = false;
+  // ボス戦中はステージバナーを隠してボスタイマーが目立つようにする
+  $stageBanner.hidden = true;
 }
 
 export function hideBossTimer() {
   $bossTimer.hidden = true;
   $bossTimer.classList.remove('urgent');
+  $stageBanner.hidden = false;
 }
 
 export function showRetryButton() {
@@ -150,7 +191,6 @@ export function hideRetryButton() {
 export function showBossWarning() {
   $bossWarning.hidden = false;
   $bossWarning.classList.remove('flash');
-  // 強制リフロー → 次フレームで animation 再起動
   void $bossWarning.offsetWidth;
   $bossWarning.classList.add('flash');
   setTimeout(() => {
@@ -169,5 +209,13 @@ export function setupUI() {
   $bossRetryBtn.addEventListener('click', () => {
     hideRetryButton();
     retryBoss();
+  });
+
+  // 下部ナビは見た目だけ (タップでアクティブ切替)
+  document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
   });
 }
