@@ -36,6 +36,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* HTML の hidden 属性を author CSS の display:flex 等に勝たせる
+   (.auth-modal や .boss-timer などに display:flex を当てているため、
+   そのままだと <div hidden> でも display:none にならず表示される) */
+[hidden] { display: none !important; }
+
 html, body {
   height: 100%;
   overflow: hidden;
