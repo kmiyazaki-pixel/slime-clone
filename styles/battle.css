@@ -11,6 +11,7 @@
   overflow: hidden;
   min-height: 280px;
   border-bottom: 3px solid #000;
+  transition: background 0.6s ease;
 }
 
 /* 地平線 */
@@ -23,6 +24,7 @@
   height: 4px;
   background: #6b4423;
   box-shadow: 0 2px 0 #4a2c10;
+  z-index: 2;
 }
 
 /* 雲っぽい飾り */
@@ -36,11 +38,118 @@
   color: rgba(255, 255, 255, 0.7);
   letter-spacing: 30px;
   animation: cloudDrift 30s linear infinite;
+  z-index: 1;
 }
 
 @keyframes cloudDrift {
   from { transform: translateX(0); }
   to   { transform: translateX(-100px); }
+}
+
+/* ========= 背景スクロール ========= */
+/* 遠景: 地平線あたりの丘・木のシルエット (ゆっくり) */
+.scroll-far {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  height: 22%;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    /* 丘 大 */
+    radial-gradient(ellipse 140px 38px at 90px 100%, var(--hill-far, #65a30d) 50%, transparent 51%),
+    /* 丘 中 */
+    radial-gradient(ellipse 100px 30px at 240px 100%, var(--hill-far-2, #4d7c0f) 50%, transparent 51%),
+    /* 木っぽい三角 */
+    radial-gradient(ellipse 14px 30px at 180px 70%, var(--tree-far, #166534) 50%, transparent 51%),
+    radial-gradient(ellipse 18px 40px at 330px 60%, var(--tree-far, #166534) 50%, transparent 51%);
+  background-repeat: repeat-x;
+  background-size: 360px 100%;
+  animation: scrollFar 18s linear infinite;
+}
+
+@keyframes scrollFar {
+  from { background-position: 0 0; }
+  to   { background-position: -360px 0; }
+}
+
+/* 近景: 地面の上の草・石・粉塵 (速め) */
+.scroll-near {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60%;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 3;
+  background-image:
+    /* 草の塊 */
+    radial-gradient(ellipse 12px 6px at 40px 30%, var(--grass, #166534) 50%, transparent 51%),
+    radial-gradient(ellipse 9px 5px at 160px 50%, var(--grass, #166534) 50%, transparent 51%),
+    /* 石 */
+    radial-gradient(ellipse 8px 4px at 100px 70%, var(--rock, #44403c) 50%, transparent 51%),
+    radial-gradient(ellipse 6px 3px at 230px 35%, var(--rock, #44403c) 50%, transparent 51%),
+    /* 粉塵 */
+    radial-gradient(circle 2px at 190px 85%, rgba(0, 0, 0, 0.35) 50%, transparent 51%),
+    radial-gradient(circle 1.5px at 60px 90%, rgba(0, 0, 0, 0.25) 50%, transparent 51%);
+  background-repeat: repeat-x;
+  background-size: 280px 100%;
+  animation: scrollNear 4s linear infinite;
+}
+
+@keyframes scrollNear {
+  from { background-position: 0 0; }
+  to   { background-position: -280px 0; }
+}
+
+/* ========= ワールド別テーマ ========= */
+/* W1: 草原 (デフォルト) — base.css の :root をそのまま使う */
+.battlefield[data-world="1"] {
+  --hill-far: #65a30d;
+  --hill-far-2: #4d7c0f;
+  --tree-far: #166534;
+  --grass: #166534;
+  --rock: #44403c;
+}
+
+/* W2: 夕焼け砂漠 */
+.battlefield[data-world="2"] {
+  --bg-sky: #fcd34d;
+  --bg-sky-low: #fb923c;
+  --bg-ground: #c2410c;
+  --bg-ground-low: #7c2d12;
+  --hill-far: #b45309;
+  --hill-far-2: #92400e;
+  --tree-far: #7c2d12;
+  --grass: #92400e;
+  --rock: #44403c;
+}
+
+/* W3: 雪山 */
+.battlefield[data-world="3"] {
+  --bg-sky: #a5f3fc;
+  --bg-sky-low: #67e8f9;
+  --bg-ground: #e0e7ff;
+  --bg-ground-low: #c7d2fe;
+  --hill-far: #94a3b8;
+  --hill-far-2: #64748b;
+  --tree-far: #1e293b;
+  --grass: #e2e8f0;
+  --rock: #94a3b8;
+}
+
+/* W4: 夜の魔界 */
+.battlefield[data-world="4"] {
+  --bg-sky: #4c1d95;
+  --bg-sky-low: #6b21a8;
+  --bg-ground: #1e1b4b;
+  --bg-ground-low: #0f0a3d;
+  --hill-far: #3b0764;
+  --hill-far-2: #2e1065;
+  --tree-far: #0f0a3d;
+  --grass: #581c87;
+  --rock: #1c1917;
 }
 
 /* ========= スライム ========= */
@@ -72,8 +181,11 @@
 .slime::after  { right: 22%; }
 
 @keyframes slimeBounce {
-  0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
-  50%      { transform: translateY(-3px) scaleX(0.97) scaleY(1.03); }
+  /* 縦の弾みに加えて、左右に微かに揺らして「歩いてる」感を出す */
+  0%, 100% { transform: translateY(0) translateX(0) scaleX(1) scaleY(1); }
+  25%      { transform: translateY(-2px) translateX(1px) scaleX(0.98) scaleY(1.02); }
+  50%      { transform: translateY(-3px) translateX(0) scaleX(0.96) scaleY(1.04); }
+  75%      { transform: translateY(-2px) translateX(-1px) scaleX(0.98) scaleY(1.02); }
 }
 
 /* ========= 敵 ========= */

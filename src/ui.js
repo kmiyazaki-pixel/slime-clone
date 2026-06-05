@@ -5,6 +5,7 @@
 import { state } from './state.js';
 import { CONFIG } from './config.js';
 import {
+  $battlefield,
   $playerLv,
   $goldDisplay,
   $gemDisplay,
@@ -130,8 +131,12 @@ export function refreshUpgradeButtons() {
   });
 }
 
-// ステージ表示を更新 (ラベル + 進捗バー)
+// ステージ表示を更新 (ラベル + 進捗バー + ワールド別の景色テーマ)
 export function updateStageDisplay() {
+  // 4ワールドごとに景色テーマをループ (W1, W2, W3, W4, W1, ...)
+  const theme = ((state.world - 1) % 4) + 1;
+  $battlefield.dataset.world = String(theme);
+
   if (state.inBossFight) {
     $stageLabel.textContent = `BOSS ${state.world}`;
     $stageLabel.classList.add('boss');

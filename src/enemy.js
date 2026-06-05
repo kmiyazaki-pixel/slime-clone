@@ -28,7 +28,8 @@ export function spawnEnemy() {
     isBoss: false,
     size: 36,
     hitRadius: CONFIG.HIT_RADIUS,
-    stopX: null,
+    // 雑魚も stopX で停止: スライムの少し右側に並ぶ (ランダムで列ができる)
+    stopX: state.player.x + 60 + Math.random() * 90,
     el: null,
     hpFill: null,
   };
@@ -126,19 +127,13 @@ export function updateEnemies(dt) {
   for (const e of state.enemies) {
     if (!e.alive) continue;
 
-    // ボスは stopX に到達したら停止
-    if (e.isBoss && e.stopX !== null && e.x <= e.stopX) {
+    // stopX に到達したら停止 (雑魚もボスもスライムを通り抜けない)
+    if (e.stopX !== null && e.x <= e.stopX) {
       // 停止位置に到達 - 動かさない
     } else {
       e.x -= e.speed * dt;
     }
     e.el.style.left = e.x + 'px';
-
-    // 画面外で消滅 (雑魚のみ。ボスは stopX で停まるのでここには来ない)
-    if (!e.isBoss && e.x < -40) {
-      e.el.remove();
-      e.alive = false;
-    }
   }
 }
 
