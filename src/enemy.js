@@ -157,15 +157,18 @@ export function killEnemy(e) {
   if (!e.alive) return;
   e.alive = false;
   e.el.classList.add('dying');
-  spawnGoldDrop(e.x + 10, e.y + 10, e.reward);
+
+  const m = state.goldMultiplier;
+  spawnGoldDrop(e.x + 10, e.y + 10, Math.floor(e.reward * m));
 
   // ボスは派手に: 複数のゴールド粒子を散らす
   if (e.isBoss) {
     const size = CONFIG.BOSS.SIZE;
+    const small = Math.floor(e.reward * m / 9);
     for (let i = 0; i < 8; i++) {
       const ox = e.x + Math.random() * size;
       const oy = e.y + Math.random() * size;
-      spawnGoldDrop(ox, oy, Math.floor(e.reward / 9));
+      spawnGoldDrop(ox, oy, small);
     }
   }
 

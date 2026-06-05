@@ -54,14 +54,24 @@ export function updateIdleTimer() {
 
 // 強化項目ごとの現在値ラベル
 function getStatLabel(key) {
-  if (key === 'attack')   return formatNum(state.attack);
-  if (key === 'fireRate') return `${state.shotInterval.toFixed(0)}ms`;
+  if (key === 'attack')    return formatNum(state.attack);
+  if (key === 'fireRate')  return `${state.shotInterval.toFixed(0)}ms`;
+  if (key === 'multiShot') return `${state.shotCount}発`;
+  if (key === 'critRate')  return `${(state.critChance * 100).toFixed(0)}%`;
+  if (key === 'critDmg')   return `x${state.critMultiplier.toFixed(1)}`;
+  if (key === 'goldBoost') return `+${Math.round((state.goldMultiplier - 1) * 100)}%`;
+  if (key === 'pierce')    return `${state.pierceCount}回`;
   return '';
 }
 
 function getStatName(key) {
-  if (key === 'attack')   return 'ダメージ';
-  if (key === 'fireRate') return '攻撃間隔';
+  if (key === 'attack')    return 'ダメージ';
+  if (key === 'fireRate')  return '攻撃間隔';
+  if (key === 'multiShot') return '同時発射数';
+  if (key === 'critRate')  return '会心の確率';
+  if (key === 'critDmg')   return '会心ダメージ';
+  if (key === 'goldBoost') return 'ゴールド倍率';
+  if (key === 'pierce')    return '貫通する敵数';
   return '';
 }
 

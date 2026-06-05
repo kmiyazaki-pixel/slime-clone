@@ -14,11 +14,11 @@ export function bindUI(updateGoldDisplay) {
   _updateGoldDisplay = updateGoldDisplay;
 }
 
-// ダメージ数字を表示
-export function showDamage(x, y, dmg) {
+// ダメージ数字を表示 (クリティカル時は派手に)
+export function showDamage(x, y, dmg, isCrit = false) {
   const el = document.createElement('div');
-  el.className = 'dmg-num';
-  el.textContent = formatNum(dmg);
+  el.className = isCrit ? 'dmg-num crit' : 'dmg-num';
+  el.textContent = isCrit ? `${formatNum(dmg)}!` : formatNum(dmg);
   el.style.left = x + 'px';
   el.style.top  = (y - 12) + 'px';
   $battlefield.appendChild(el);

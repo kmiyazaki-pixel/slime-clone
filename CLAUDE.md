@@ -38,9 +38,10 @@
 
 - [x] **Phase 1**: コアループ (自動射撃、敵スポーン、ゴールド、攻撃強化)
 - [x] **Phase 2-A**: ステージ進行、難易度スケーリング、AUTO切替
-- [ ] **Phase 2-B**: ボス戦 ← **次はここから**
-- [ ] **Phase 3**: ダブル/トリプルショット、複数強化項目
-- [ ] **Phase 4**: 召喚、ペット、放置報酬、セーブ機能
+- [x] **Phase 2-B**: ボス戦 (Stage 10 で出現、30秒制限、再挑戦ボタン)
+- [x] **Phase 3**: マルチショット/クリ率/クリ倍率/ゴールドUP/貫通弾 の5強化追加
+- [x] **UI 刷新**: スライム伝説風レイアウト (上部バー/戦場オーバーレイ/円形アクション/下部ナビ)
+- [ ] **Phase 4**: 召喚、ペット、放置報酬、セーブ機能 ← **次はここから**
 
 ## ファイル構成
 
@@ -73,75 +74,36 @@
 - **数値表記**: 大きい数値は `1.23K` / `1.23M` 形式で表示 (`utils.formatNum`)
 - **強化コスト**: 指数成長 (`baseCost * costMul^(level-1)`)
 
-## 次にやること: Phase 2-B (ボス戦)
+## 既に出来上がっているもの (参考)
 
-### 仕様
+### Phase 2-B ボス戦
+- 各ワールドの Stage 10 でボス出現 (HP×8, 報酬×30, 30秒制限)
+- 撃破 → 次ワールド Stage 1 / タイムアップ → 雑魚スポーン再開＆再挑戦ボタン
+- 関連 config: `CONFIG.BOSS`、state: `inBossFight`/`bossTimer`/`boss`/`bossDefeated`
+- 主な関数: `startBossFight`/`endBossFight`/`retryBoss` (stage.js)、`spawnBoss` (enemy.js)
 
-- 各ワールドの **Stage 10** に到達するとボスが出現
-- ボスは普通の敵より大きく、HP は通常の `N` 倍、報酬も `N` 倍
-- ボス戦には **制限時間** (例: 30秒)
-- 倒したら → 次のワールドの Stage 1 へ進む
-- 時間切れ → ボス消滅、雑魚スポーン再開、画面に「ボス再挑戦」ボタンを表示
-- 再挑戦ボタンを押すといつでもボス戦をやり直せる (現スライム伝説の挙動と同じ)
+### Phase 3 強化項目
+追加された5項目: マルチショット (Lv4ごとに+1発, 扇形)、クリ率 (+2%/Lv)、
+クリ倍率 (+0.2x/Lv, 初期2.0x)、ゴールドUP (+5%/Lv)、貫通弾 (Lv5ごとに+1)。
+- 関連 config: `CONFIG.MULTI_SHOT`/`CRIT`/`GOLD_BOOST`/`PIERCE`
+- 関連 state: `shotCount`/`critChance`/`critMultiplier`/`goldMultiplier`/`pierceCount`
+- 発射の公開API: `fireAt(target)` (projectile.js)
 
-### 実装プラン
+## 次にやること: Phase 4 (召喚 / ペット / 放置報酬 / セーブ)
 
-1. **`config.js`** に追加:
-   ```js
-   BOSS: {
-     HP_MULTIPLIER: 8,        // 通常敵の何倍のHP
-     REWARD_MULTIPLIER: 30,   // 通常敵の何倍の報酬
-     TIMER_SECONDS: 30,
-     SIZE: 80,                // px (通常敵は 36px)
-   }
-   ```
+### ざっくり仕様 (要相談)
 
-2. **`state.js`** に追加:
-   ```js
-   inBossFight: false,
-   bossTimer: 0,             // 残り秒数
-   boss: null,               // 現在のボスインスタンス
-   bossDefeated: false,      // 一度倒したワールドか (再挑戦ボタンの表示制御に使用)
-   ```
+- **召喚**: ゴールドを払って一時的に味方ユニットを呼ぶ。スライムの後ろに並んで自動で前方に攻撃。一定時間で消える or 永続化。
+- **ペット**: 召喚と違って常駐。種類ごとに別の効果 (攻撃補助 / ゴールドUP / クリ補助 など)。スロット数制限あり。
+- **放置報酬**: 一定時間後にゲームを開いたら、放置中に倒せた敵分のゴールドを `e^k*t` 風にまとめて受け取れる。
+- **セーブ機能**: `localStorage` に state のスナップショットを保存して、リロードでも続きから。
 
-3. **`stage.js`** の `advanceStage()` を改修:
-   - Stage 9 から進む時 (=Stage 10 に入る時) に `startBossFight()` を呼ぶ
-   - 普通の Stage 10 完了の処理は不要にする (ボスが進行制御するため)
+### 実装方針メモ
 
-4. **`stage.js`** に新規関数:
-   - `startBossFight()`: 雑魚スポーンを止め、ボスをスポーン、タイマー開始
-   - `endBossFight(victory)`:
-     - victory=true → 次ワールドへ、雑魚スポーン再開
-     - victory=false → ボス消滅、雑魚スポーン再開、再挑戦ボタン表示
-   - `retryBoss()`: 再挑戦ボタンから呼ばれる
-
-5. **`enemy.js`** に新規:
-   - `spawnBoss()`: 大きい見た目の敵を生成、`isBoss: true` フラグ付き
-   - `killEnemy()`: ボスだった場合は `endBossFight(true)` を呼ぶ
-
-6. **`main.js`** ゲームループ:
-   - `state.inBossFight` の間、`bossTimer -= dt`
-   - `bossTimer <= 0` で `endBossFight(false)`
-   - 雑魚スポーンは `!state.inBossFight` の時だけ実行
-
-7. **`ui.js`** に追加:
-   - `updateBossTimer()`: タイマーバー/数字を更新
-   - `showRetryButton()` / `hideRetryButton()`
-
-8. **`index.html`** に追加:
-   - ボスタイマー表示 (戦場の上部にバーとして重ねる)
-   - ボス再挑戦ボタン (画面右の浮きボタン)
-
-9. **CSS**:
-   - `.enemy.boss` (大きい、紫系の色で差別化)
-   - `.boss-timer` (戦場上部にオーバーレイ)
-   - `.boss-retry-btn` (浮きボタン)
-
-### UX注意点
-
-- ボス出現時は何らかの演出 (`.boss-warning` フラッシュとか) があると良い
-- タイマー残り5秒で赤く点滅させる
-- 倒した瞬間にゴールド粒子を盛大に飛ばす (報酬量も多いので)
+- セーブ対象は `state` 全体ではなく、永続化したいフィールドだけ (gold, world, stage, upgrades の level、Phase 3 系の派生値、ペット/召喚の進捗)。
+- セーブのトリガは「強化購入時」「ステージ進行時」「ボス勝敗時」「タブ非表示時」あたり。
+- 召喚/ペットはまず1種類だけ実装して仕組みを通す → あとから種類追加。
+- 放置報酬は「最後にセーブした時間」と「現在時刻」の差から計算 (実時間ベース)。
 
 ## ローカル開発
 

@@ -17,6 +17,13 @@ export const state = {
   attack: 1,
   shotInterval: 600,   // ms
 
+  // Phase 3: マルチショット/クリ/ゴールド/貫通
+  shotCount: 1,        // 同時発射数
+  critChance: 0,       // 0-1
+  critMultiplier: 2.0, // クリ時のダメージ倍率
+  goldMultiplier: 1.0, // ゴールド報酬の倍率
+  pierceCount: 0,      // 弾が貫通できる追加敵数 (0=単発)
+
   // ステージ進行
   world: 1,
   stage: 1,
@@ -67,6 +74,58 @@ export const state = {
       costMul: 1.20,
       apply: (s) => {
         s.shotInterval = Math.max(120, s.shotInterval * 0.94);
+      },
+    },
+    multiShot: {
+      name: 'マルチショット',
+      icon: '🎯',
+      level: 1,
+      baseCost: 150,
+      costMul: 1.45,
+      apply: (s) => {
+        // Lv 4 ごとに +1発 (Lv4=2発, Lv8=3発...)
+        if (s.upgrades.multiShot.level % 4 === 0) s.shotCount++;
+      },
+    },
+    critRate: {
+      name: 'クリ率',
+      icon: '🎲',
+      level: 1,
+      baseCost: 80,
+      costMul: 1.22,
+      apply: (s) => {
+        s.critChance = Math.min(1.0, s.critChance + 0.02);
+      },
+    },
+    critDmg: {
+      name: 'クリ倍率',
+      icon: '💥',
+      level: 1,
+      baseCost: 120,
+      costMul: 1.25,
+      apply: (s) => {
+        s.critMultiplier += 0.2;
+      },
+    },
+    goldBoost: {
+      name: 'ゴールドUP',
+      icon: '💰',
+      level: 1,
+      baseCost: 60,
+      costMul: 1.18,
+      apply: (s) => {
+        s.goldMultiplier += 0.05;
+      },
+    },
+    pierce: {
+      name: '貫通弾',
+      icon: '🏹',
+      level: 1,
+      baseCost: 200,
+      costMul: 1.5,
+      apply: (s) => {
+        // Lv 5 ごとに +1貫通 (Lv5=1, Lv10=2...)
+        if (s.upgrades.pierce.level % 5 === 0) s.pierceCount++;
       },
     },
   },

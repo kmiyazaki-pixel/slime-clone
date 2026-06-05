@@ -41,4 +41,28 @@ export const CONFIG = {
     STOP_RATIO: 0.55,        // 戦場幅に対する停止位置
     HIT_RADIUS: 44,          // ボス用の大きめ当たり判定
   },
+
+  // マルチショット
+  MULTI_SHOT: {
+    LV_STEP: 4,              // この Lv ごとに発射数+1
+    SPREAD_DEG: 18,          // 全幅 (両端で ±9度)
+  },
+
+  // クリティカル
+  CRIT: {
+    RATE_PER_LV: 0.02,       // Lv上昇ごとの確率増分
+    MAX_RATE: 1.0,
+    BASE_MULTIPLIER: 2.0,    // クリ倍率 Lv1 の初期値
+    MULTIPLIER_PER_LV: 0.2,  // Lv上昇ごとの倍率増分
+  },
+
+  // ゴールドブースト
+  GOLD_BOOST: {
+    PER_LV: 0.05,            // Lv上昇ごとに +5%
+  },
+
+  // 貫通
+  PIERCE: {
+    LV_STEP: 5,              // この Lv ごとに +1 貫通
+  },
 };

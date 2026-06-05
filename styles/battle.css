@@ -249,6 +249,25 @@
   100% { transform: translateY(-40px) scale(0.7); opacity: 0; }
 }
 
+/* クリティカル時のダメージ数字 */
+.dmg-num.crit {
+  color: #fde047;
+  font-size: 26px;
+  font-family: 'DotGothic16', monospace;
+  letter-spacing: 1px;
+  text-shadow:
+    2px 2px 0 #7c2d12, -2px 2px 0 #7c2d12,
+    2px -2px 0 #7c2d12, -2px -2px 0 #7c2d12,
+    0 0 10px rgba(253, 224, 71, 0.7);
+  animation: dmgCritFloat 0.8s ease-out forwards;
+}
+
+@keyframes dmgCritFloat {
+  0%   { transform: translateY(0) scale(1.6); opacity: 1; }
+  15%  { transform: translateY(-6px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(-50px) scale(0.8); opacity: 0; }
+}
+
 /* ========= ゴールド粒子 ========= */
 .gold-drop {
   position: absolute;

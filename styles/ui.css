@@ -626,6 +626,31 @@
   border-color: #4c1d95;
 }
 
+.up-multiShot .upg-icon {
+  background: linear-gradient(180deg, #67e8f9, #0e7490);
+  border-color: #155e75;
+}
+
+.up-critRate .upg-icon {
+  background: linear-gradient(180deg, #fda4af, #be123c);
+  border-color: #4c0519;
+}
+
+.up-critDmg .upg-icon {
+  background: linear-gradient(180deg, #fdba74, #b91c1c);
+  border-color: #7f1d1d;
+}
+
+.up-goldBoost .upg-icon {
+  background: linear-gradient(180deg, #fde047, #b45309);
+  border-color: #78350f;
+}
+
+.up-pierce .upg-icon {
+  background: linear-gradient(180deg, #86efac, #15803d);
+  border-color: #14532d;
+}
+
 .upg-level {
   font-family: 'DotGothic16', monospace;
   font-size: 10px;

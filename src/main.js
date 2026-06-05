@@ -6,7 +6,7 @@ import { state } from './state.js';
 import { CONFIG } from './config.js';
 import { $battlefield } from './dom.js';
 import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
-import { spawnProjectile, updateProjectiles } from './projectile.js';
+import { fireAt, updateProjectiles } from './projectile.js';
 import { endBossFight } from './stage.js';
 import { bindUI } from './effects.js';
 import {
@@ -61,11 +61,11 @@ function gameLoop(now) {
   // 敵の移動
   updateEnemies(dt);
 
-  // 自動射撃 (一定間隔で一番近い敵を撃つ)
+  // 自動射撃 (一定間隔で一番近い敵を撃つ。マルチショットなら扇状に)
   if (now - state.lastShot > state.shotInterval) {
     const t = findNearestEnemy();
     if (t) {
-      spawnProjectile(t);
+      fireAt(t);
       state.lastShot = now;
     }
   }
