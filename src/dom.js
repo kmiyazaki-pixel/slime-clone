@@ -11,3 +11,10 @@ export const $stageLabel         = document.getElementById('stageLabel');
 export const $stageProgressBar   = document.getElementById('stageProgressBar');
 export const $stageProgressText  = document.getElementById('stageProgressText');
 export const $autoToggle         = document.getElementById('autoToggle');
+
+// ボス戦
+export const $bossTimer          = document.getElementById('bossTimer');
+export const $bossTimerBar       = document.getElementById('bossTimerBar');
+export const $bossTimerText      = document.getElementById('bossTimerText');
+export const $bossRetryBtn       = document.getElementById('bossRetryBtn');
+export const $bossWarning        = document.getElementById('bossWarning');

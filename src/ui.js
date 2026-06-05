@@ -1,8 +1,9 @@
 // =====================================================
-//  UI - ゴールド表示、強化パネルの描画
+//  UI - ゴールド表示、強化パネルの描画、ステージ、ボス
 // =====================================================
 
 import { state } from './state.js';
+import { CONFIG } from './config.js';
 import {
   $goldDisplay,
   $upgrades,
@@ -10,8 +11,14 @@ import {
   $stageProgressBar,
   $stageProgressText,
   $autoToggle,
+  $bossTimer,
+  $bossTimerBar,
+  $bossTimerText,
+  $bossRetryBtn,
+  $bossWarning,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
+import { retryBoss } from './stage.js';
 
 // ゴールド表示を最新値に更新
 export function updateGoldDisplay() {
@@ -77,10 +84,20 @@ export function refreshUpgradeButtons() {
 
 // ステージ表示を更新 (バッジ + 進捗バー)
 export function updateStageDisplay() {
-  $stageLabel.textContent = `${state.world}-${state.stage}`;
-  $stageProgressText.textContent = `${state.killsInStage} / ${state.killsRequired}`;
-  const ratio = Math.min(1, state.killsInStage / state.killsRequired);
-  $stageProgressBar.style.width = (ratio * 100) + '%';
+  if (state.inBossFight) {
+    $stageLabel.textContent = `BOSS ${state.world}`;
+    $stageLabel.classList.add('boss');
+    $stageProgressText.textContent = 'BOSS FIGHT';
+    $stageProgressBar.style.width = '100%';
+    $stageProgressBar.classList.add('boss');
+  } else {
+    $stageLabel.textContent = `${state.world}-${state.stage}`;
+    $stageLabel.classList.remove('boss');
+    $stageProgressText.textContent = `${state.killsInStage} / ${state.killsRequired}`;
+    const ratio = Math.min(1, state.killsInStage / state.killsRequired);
+    $stageProgressBar.style.width = (ratio * 100) + '%';
+    $stageProgressBar.classList.remove('boss');
+  }
 }
 
 // AUTO ボタンの見た目を state に合わせる
@@ -94,10 +111,63 @@ export function updateAutoButton() {
   }
 }
 
+// =====================================================
+//  ボスUI
+// =====================================================
+
+// ボスタイマー表示を更新
+export function updateBossTimer() {
+  const remain = Math.max(0, state.bossTimer);
+  $bossTimerText.textContent = Math.ceil(remain);
+  const ratio = remain / CONFIG.BOSS.TIMER_SECONDS;
+  $bossTimerBar.style.width = (ratio * 100) + '%';
+  // 残り5秒で赤く点滅
+  if (remain <= 5) {
+    $bossTimer.classList.add('urgent');
+  } else {
+    $bossTimer.classList.remove('urgent');
+  }
+}
+
+export function showBossTimer() {
+  $bossTimer.hidden = false;
+}
+
+export function hideBossTimer() {
+  $bossTimer.hidden = true;
+  $bossTimer.classList.remove('urgent');
+}
+
+export function showRetryButton() {
+  $bossRetryBtn.hidden = false;
+}
+
+export function hideRetryButton() {
+  $bossRetryBtn.hidden = true;
+}
+
+// ボス出現警告フラッシュ
+export function showBossWarning() {
+  $bossWarning.hidden = false;
+  $bossWarning.classList.remove('flash');
+  // 強制リフロー → 次フレームで animation 再起動
+  void $bossWarning.offsetWidth;
+  $bossWarning.classList.add('flash');
+  setTimeout(() => {
+    $bossWarning.hidden = true;
+    $bossWarning.classList.remove('flash');
+  }, 1200);
+}
+
 // UI のイベントリスナーを一括セットアップ
 export function setupUI() {
   $autoToggle.addEventListener('click', () => {
     state.autoProgress = !state.autoProgress;
     updateAutoButton();
+  });
+
+  $bossRetryBtn.addEventListener('click', () => {
+    hideRetryButton();
+    retryBoss();
   });
 }

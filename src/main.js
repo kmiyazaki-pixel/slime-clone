@@ -7,6 +7,7 @@ import { CONFIG } from './config.js';
 import { $battlefield } from './dom.js';
 import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
 import { spawnProjectile, updateProjectiles } from './projectile.js';
+import { endBossFight } from './stage.js';
 import { bindUI } from './effects.js';
 import {
   updateGoldDisplay,
@@ -14,6 +15,7 @@ import {
   refreshUpgradeButtons,
   updateStageDisplay,
   updateAutoButton,
+  updateBossTimer,
   setupUI,
 } from './ui.js';
 
@@ -35,10 +37,19 @@ function gameLoop(now) {
   const dt = Math.min(0.05, (now - lastFrame) / 1000);
   lastFrame = now;
 
-  // 敵スポーン
-  if (now - state.lastSpawn > CONFIG.SPAWN_INTERVAL) {
+  // 敵スポーン (ボス戦中は止める)
+  if (!state.inBossFight && now - state.lastSpawn > CONFIG.SPAWN_INTERVAL) {
     state.lastSpawn = now;
     spawnEnemy();
+  }
+
+  // ボスタイマー
+  if (state.inBossFight) {
+    state.bossTimer -= dt;
+    updateBossTimer();
+    if (state.bossTimer <= 0) {
+      endBossFight(false);
+    }
   }
 
   // 敵の移動

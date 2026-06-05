@@ -30,4 +30,15 @@ export const CONFIG = {
 
   // 当たり判定の半径
   HIT_RADIUS: 22,
+
+  // ボス
+  BOSS: {
+    HP_MULTIPLIER: 8,        // 通常敵の何倍のHP
+    REWARD_MULTIPLIER: 30,   // 通常敵の何倍の報酬
+    TIMER_SECONDS: 30,
+    SIZE: 80,                // px (通常敵は 36px)
+    SPEED: 18,               // px/sec (雑魚より遅め)
+    STOP_RATIO: 0.55,        // 戦場幅に対する停止位置
+    HIT_RADIUS: 44,          // ボス用の大きめ当たり判定
+  },
 };

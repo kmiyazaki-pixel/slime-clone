@@ -17,6 +17,12 @@ export const state = {
   killsRequired: 5,
   autoProgress: true,  // AUTO ON/OFF
 
+  // ボス戦
+  inBossFight: false,
+  bossTimer: 0,        // 残り秒数
+  boss: null,          // 現在のボスインスタンス
+  bossDefeated: false, // 現ワールドのボスを倒したか (再挑戦ボタン制御)
+
   // タイミング
   lastShot: 0,
   lastSpawn: 0,

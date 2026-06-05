@@ -210,3 +210,119 @@
   opacity: 0.9;
   margin-top: 2px;
 }
+
+/* ========= ボス: ステージラベル ========= */
+.stage-label.boss {
+  background: linear-gradient(180deg, #f87171, #b91c1c);
+  border-color: #7f1d1d;
+  color: #fff;
+  text-shadow: 1px 1px 0 #450a0a;
+  box-shadow: 0 3px 0 #7f1d1d, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  animation: stageLabelBossPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes stageLabelBossPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+/* ボス戦中の進捗バーは赤くする (バー自体は満タン固定) */
+.stage-progress-bar.boss {
+  background: linear-gradient(90deg, #f87171, #dc2626);
+}
+
+/* ========= ボスタイマー (戦場上部にオーバーレイ) ========= */
+.boss-timer {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 6px 10px;
+  z-index: 15;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.boss-timer-label {
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px;
+  font-weight: 900;
+  color: #fca5a5;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.boss-timer-bar-wrap {
+  flex: 1;
+  height: 12px;
+  background: #1e293b;
+  border: 1px solid #000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.boss-timer-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #fbbf24, #dc2626);
+  transition: width 0.15s linear;
+}
+
+.boss-timer-text {
+  min-width: 28px;
+  text-align: right;
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.boss-timer.urgent {
+  animation: bossTimerUrgent 0.4s ease-in-out infinite;
+}
+
+.boss-timer.urgent .boss-timer-text {
+  color: #fca5a5;
+}
+
+@keyframes bossTimerUrgent {
+  0%, 100% { background: rgba(15, 23, 42, 0.85); }
+  50%      { background: rgba(220, 38, 38, 0.85); }
+}
+
+/* ========= ボス再挑戦ボタン (画面右の浮きボタン) ========= */
+.boss-retry-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 14px;
+  background: linear-gradient(180deg, #a855f7, #6b21a8);
+  border: 2px solid #4c1d95;
+  color: #fff;
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #4c1d95, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  z-index: 16;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  animation: retryBtnPulse 1.1s ease-in-out infinite;
+}
+
+.boss-retry-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #4c1d95, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+@keyframes retryBtnPulse {
+  0%, 100% { box-shadow: 0 4px 0 #4c1d95, inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 0 0 rgba(168, 85, 247, 0.7); }
+  50%      { box-shadow: 0 4px 0 #4c1d95, inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 0 8px rgba(168, 85, 247, 0); }
+}

@@ -21,6 +21,21 @@
   </div>
   <div class="battlefield" id="battlefield">
     <div class="slime" id="slime"></div>
+
+    <!-- ボスタイマー (戦場上部にオーバーレイ) -->
+    <div class="boss-timer" id="bossTimer" hidden>
+      <div class="boss-timer-label">BOSS</div>
+      <div class="boss-timer-bar-wrap">
+        <div class="boss-timer-bar" id="bossTimerBar"></div>
+      </div>
+      <div class="boss-timer-text" id="bossTimerText">30</div>
+    </div>
+
+    <!-- ボス出現警告フラッシュ -->
+    <div class="boss-warning" id="bossWarning" hidden>BOSS!!</div>
+
+    <!-- ボス再挑戦ボタン (画面右の浮きボタン) -->
+    <button class="boss-retry-btn" id="bossRetryBtn" hidden>BOSS<br>再挑戦</button>
   </div>
   <div class="action-bar">
     <button class="auto-toggle" id="autoToggle">AUTO<br>ON</button>

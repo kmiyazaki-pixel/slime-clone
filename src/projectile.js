@@ -13,9 +13,14 @@ export function spawnProjectile(target) {
   const sx = state.player.x + 30;
   const sy = state.player.y;
 
+  // ターゲットの中心
+  const half = target.size / 2;
+  const tcx = target.x + half;
+  const tcy = target.y + half;
+
   // ターゲット中心への単位ベクトル
-  const dx = (target.x + 18) - sx;
-  const dy = (target.y + 18) - sy;
+  const dx = tcx - sx;
+  const dy = tcy - sy;
   const dist = Math.hypot(dx, dy);
 
   const p = {
@@ -52,12 +57,15 @@ export function updateProjectiles(dt) {
     // ターゲット (生きてる敵) との距離判定
     const t = state.enemies.find(e => e.id === p.targetId && e.alive);
     if (t) {
-      const dx = (t.x + 18) - p.x;
-      const dy = (t.y + 18) - p.y;
-      if (Math.hypot(dx, dy) < CONFIG.HIT_RADIUS) {
+      const half = t.size / 2;
+      const tcx = t.x + half;
+      const tcy = t.y + half;
+      const dx = tcx - p.x;
+      const dy = tcy - p.y;
+      if (Math.hypot(dx, dy) < t.hitRadius) {
         // 命中
         t.hp -= p.damage;
-        showDamage(t.x + 10, t.y, p.damage);
+        showDamage(t.x + half - 10, t.y, p.damage);
         t.hpFill.style.width = Math.max(0, (t.hp / t.maxHp) * 100) + '%';
         t.el.classList.add('hit');
         setTimeout(() => t.el.classList.remove('hit'), 60);
