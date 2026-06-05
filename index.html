@@ -33,7 +33,9 @@
     <div class="top-actions">
       <button class="top-btn video-btn"><span>×2</span></button>
       <button class="top-btn mail-btn"></button>
-      <button class="top-btn settings-btn"></button>
+      <button class="top-btn settings-btn">
+        <span class="auth-login-dot" id="authLoginDot" hidden></span>
+      </button>
     </div>
   </header>
 
@@ -119,6 +121,35 @@
     </div>
     <div class="upgrades" id="upgrades"></div>
   </section>
+
+  <!-- ========= クラウド/ログインモーダル ========= -->
+  <div class="auth-modal" id="authModal" hidden>
+    <div class="auth-modal-bg" id="authModalBg"></div>
+    <div class="auth-modal-card">
+      <div class="auth-modal-title">クラウドセーブ</div>
+
+      <!-- 未ログイン -->
+      <div class="auth-section" id="authSignedOut">
+        <p class="auth-help">
+          メールアドレスでログインすると、別の端末でも同じ進捗で遊べます。<br>
+          ログインしなくてもこの端末では遊べます。
+        </p>
+        <input type="email" id="authEmailInput" placeholder="you@example.com" autocomplete="email">
+        <button class="auth-btn auth-primary" id="authSendBtn">ログインリンクを送信</button>
+        <div class="auth-status" id="authStatus"></div>
+      </div>
+
+      <!-- ログイン済み -->
+      <div class="auth-section" id="authSignedIn" hidden>
+        <p class="auth-help">ログイン中:</p>
+        <p class="auth-email-display" id="authEmailDisplay"></p>
+        <button class="auth-btn auth-secondary" id="authSyncBtn">今すぐ同期</button>
+        <button class="auth-btn auth-danger" id="authLogoutBtn">ログアウト</button>
+      </div>
+
+      <button class="auth-close" id="authCloseBtn">閉じる</button>
+    </div>
+  </div>
 
   <!-- ========= 5. 下部ナビゲーション ========= -->
   <nav class="bottom-nav">

@@ -9,7 +9,7 @@ import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
 import { fireAt, updateProjectiles } from './projectile.js';
 import { endBossFight, startBossFight } from './stage.js';
 import { bindUI } from './effects.js';
-import { saveGame, loadGame } from './save.js';
+import { saveGame, loadGame, bindCloud as bindCloudSave } from './save.js';
 import {
   updateGoldDisplay,
   updateGemDisplay,
@@ -21,6 +21,9 @@ import {
   updateAutoButton,
   updateBossTimer,
   setupUI,
+  renderAll,
+  bindCloud as bindCloudUI,
+  refreshAuthUI,
 } from './ui.js';
 
 // プレイヤーの位置を戦場の高さに合わせて設定
@@ -105,6 +108,29 @@ function init() {
   if (state.stage === 10 && !state.inBossFight) {
     startBossFight();
   }
+
+  // クラウド同期 (Supabase) は遅延ロード。失敗してもゲームは続行
+  import('./cloud.js').then(cloud => {
+    bindCloudSave(cloud.schedulePush);
+    bindCloudUI(cloud);
+
+    // 起動時・サインイン時にクラウドから引っ張ってきて適用
+    cloud.onAuthChange(async (event) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        const applied = await cloud.pullAndApply();
+        if (applied) {
+          renderAll();
+          if (state.stage === 10 && !state.inBossFight) startBossFight();
+        } else {
+          // クラウドが空 or ローカルが新しい → 今の状態を push しておく
+          cloud.schedulePush();
+        }
+      }
+      refreshAuthUI();
+    });
+  }).catch(e => {
+    console.warn('[cloud] unavailable, offline mode:', e && e.message);
+  });
 
   // ウィンドウサイズ変更時にプレイヤー位置を再計算
   window.addEventListener('resize', setPlayerY);

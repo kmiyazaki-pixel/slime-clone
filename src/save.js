@@ -8,8 +8,8 @@
 //   - スキーマには v (バージョン) を持たせて、将来的な変更に備える
 //   - localStorage が使えない / JSON が壊れている時は黙ってデフォルトで起動
 //
-//  ボス戦中に保存された場合の扱い: state.stage = 10 で復元 → main.js 側で
-//  `startBossFight()` を呼び直して再開する (この save.js では関知しない)
+//  クラウド同期 (cloud.js) は bindCloud() でフックを差し込むことで連携する。
+//  save.js は cloud.js を直接 import しないので、Supabase なしでも動く。
 
 import { state } from './state.js';
 
@@ -35,11 +35,14 @@ const SCALAR_KEYS = [
   'autoProgress',
 ];
 
-function snapshot() {
+// クラウド同期コールバック (cloud.js から bindCloud で差し込まれる)
+let cloudHook = null;
+export function bindCloud(cb) { cloudHook = cb; }
+
+// 公開: state を平のオブジェクトにシリアライズ
+export function snapshot() {
   const data = { v: VERSION, savedAt: Date.now() };
-  for (const k of SCALAR_KEYS) {
-    data[k] = state[k];
-  }
+  for (const k of SCALAR_KEYS) data[k] = state[k];
   // 強化の level だけ保存 (apply関数とかは保存しない)
   const levels = {};
   for (const key in state.upgrades) {
@@ -49,7 +52,9 @@ function snapshot() {
   return data;
 }
 
-function restore(snap) {
+// 公開: スナップショットを state に適用。成功なら true
+export function restore(snap) {
+  if (!snap || snap.v !== VERSION) return false;
   for (const k of SCALAR_KEYS) {
     if (snap[k] !== undefined) state[k] = snap[k];
   }
@@ -60,15 +65,16 @@ function restore(snap) {
       }
     }
   }
+  return true;
 }
 
-// 公開: 現在の state を localStorage に書き出す
+// 公開: 現在の state を localStorage に書き出す (+ クラウドにも通知)
 export function saveGame() {
   try {
     const data = snapshot();
     localStorage.setItem(KEY, JSON.stringify(data));
+    if (cloudHook) cloudHook();
   } catch (e) {
-    // localStorage が使えない (プライベートブラウジング等) は無視
     console.warn('[save] failed:', e && e.message);
   }
 }
@@ -79,12 +85,7 @@ export function loadGame() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return false;
     const snap = JSON.parse(raw);
-    if (!snap || snap.v !== VERSION) {
-      console.warn('[save] schema mismatch, starting fresh');
-      return false;
-    }
-    restore(snap);
-    return true;
+    return restore(snap);
   } catch (e) {
     console.warn('[save] load failed:', e && e.message);
     return false;

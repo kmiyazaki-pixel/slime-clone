@@ -22,6 +22,19 @@ import {
   $bossTimerText,
   $bossRetryBtn,
   $bossWarning,
+  $settingsBtn,
+  $authModal,
+  $authModalBg,
+  $authSignedOut,
+  $authSignedIn,
+  $authEmailInput,
+  $authSendBtn,
+  $authStatus,
+  $authEmailDisplay,
+  $authSyncBtn,
+  $authLogoutBtn,
+  $authCloseBtn,
+  $authLoginDot,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
@@ -235,4 +248,114 @@ export function setupUI() {
       btn.classList.add('active');
     });
   });
+
+  // ⚙ ボタンでクラウドセーブ/ログインのモーダルを開く
+  $settingsBtn.addEventListener('click', openAuthModal);
+  $authModalBg.addEventListener('click', closeAuthModal);
+  $authCloseBtn.addEventListener('click', closeAuthModal);
+  $authSendBtn.addEventListener('click', handleSendMagicLink);
+  $authSyncBtn.addEventListener('click', handleManualSync);
+  $authLogoutBtn.addEventListener('click', handleLogout);
+  // Enter キーでもメール送信
+  $authEmailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSendMagicLink();
+  });
+}
+
+// =====================================================
+//  画面全部を state に合わせて再描画 (クラウドから state が差し替わった後など)
+// =====================================================
+export function renderAll() {
+  updatePlayerLv();
+  updateGoldDisplay();
+  updateGemDisplay();
+  updateIdleTimer();
+  updateStageDisplay();
+  updateAutoButton();
+  renderUpgrades();
+}
+
+// =====================================================
+//  クラウド/認証モーダル
+// =====================================================
+
+// 遅延 import される cloud.js を差し込むためのスロット
+let cloud = null;
+export function bindCloud(mod) {
+  cloud = mod;
+  refreshAuthUI();
+}
+
+function openAuthModal() {
+  $authModal.hidden = false;
+  $authStatus.textContent = '';
+  refreshAuthUI();
+}
+
+function closeAuthModal() {
+  $authModal.hidden = true;
+  $authStatus.textContent = '';
+}
+
+// セッション状態に合わせてモーダル内とドット表示を更新
+export async function refreshAuthUI() {
+  if (!cloud) {
+    $authSignedOut.hidden = false;
+    $authSignedIn.hidden = true;
+    $authLoginDot.hidden = true;
+    return;
+  }
+  const session = await cloud.getCurrentSession();
+  if (session) {
+    $authSignedOut.hidden = true;
+    $authSignedIn.hidden = false;
+    $authEmailDisplay.textContent = session.user.email || '(no email)';
+    $authLoginDot.hidden = false;
+  } else {
+    $authSignedOut.hidden = false;
+    $authSignedIn.hidden = true;
+    $authLoginDot.hidden = true;
+  }
+}
+
+async function handleSendMagicLink() {
+  if (!cloud) {
+    $authStatus.textContent = 'クラウドが読み込めていません';
+    return;
+  }
+  const email = $authEmailInput.value.trim();
+  if (!email || !email.includes('@')) {
+    $authStatus.textContent = 'メールアドレスを入力してください';
+    return;
+  }
+  $authStatus.textContent = '送信中…';
+  $authSendBtn.disabled = true;
+  try {
+    const { error } = await cloud.signInWithEmail(email);
+    if (error) {
+      $authStatus.textContent = `エラー: ${error.message}`;
+    } else {
+      $authStatus.textContent = 'メールを送りました。届いたリンクを開いてください';
+    }
+  } catch (e) {
+    $authStatus.textContent = `エラー: ${e && e.message}`;
+  } finally {
+    $authSendBtn.disabled = false;
+  }
+}
+
+async function handleManualSync() {
+  if (!cloud) return;
+  $authStatus.textContent = '同期中…';
+  const pushRes = await cloud.pushNow();
+  const applied = await cloud.pullAndApply();
+  if (applied) renderAll();
+  $authStatus.textContent = pushRes.ok ? '同期しました' : `同期失敗: ${pushRes.reason || '不明'}`;
+}
+
+async function handleLogout() {
+  if (!cloud) return;
+  await cloud.signOut();
+  $authStatus.textContent = 'ログアウトしました';
+  refreshAuthUI();
 }

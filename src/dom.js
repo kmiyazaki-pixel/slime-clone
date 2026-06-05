@@ -31,3 +31,18 @@ export const $bossTimerBar       = document.getElementById('bossTimerBar');
 export const $bossTimerText      = document.getElementById('bossTimerText');
 export const $bossRetryBtn       = document.getElementById('bossRetryBtn');
 export const $bossWarning        = document.getElementById('bossWarning');
+
+// 認証/クラウド (上部バーの ⚙ ボタン → モーダル)
+export const $settingsBtn        = document.querySelector('.settings-btn');
+export const $authModal          = document.getElementById('authModal');
+export const $authModalBg        = document.getElementById('authModalBg');
+export const $authSignedOut      = document.getElementById('authSignedOut');
+export const $authSignedIn       = document.getElementById('authSignedIn');
+export const $authEmailInput     = document.getElementById('authEmailInput');
+export const $authSendBtn        = document.getElementById('authSendBtn');
+export const $authStatus         = document.getElementById('authStatus');
+export const $authEmailDisplay   = document.getElementById('authEmailDisplay');
+export const $authSyncBtn        = document.getElementById('authSyncBtn');
+export const $authLogoutBtn      = document.getElementById('authLogoutBtn');
+export const $authCloseBtn       = document.getElementById('authCloseBtn');
+export const $authLoginDot       = document.getElementById('authLoginDot');
