@@ -1,0 +1,46 @@
+:root {
+  --bg-sky: #8ed5ee;
+  --bg-sky-low: #b9e4f3;
+  --bg-ground: #c4a373;
+  --bg-ground-low: #a07d52;
+  --slime-body: #4ade80;
+  --slime-shadow: #16a34a;
+  --enemy-body: #ef4444;
+  --enemy-shadow: #991b1b;
+  --projectile: #fef3c7;
+  --gold: #fbbf24;
+  --hp-bg: #1f2937;
+  --hp-fill: #22c55e;
+  --ui-bg: #0f172a;
+  --ui-card: #1e293b;
+  --ui-text: #f1f5f9;
+  --accent: #facc15;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--ui-bg);
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}

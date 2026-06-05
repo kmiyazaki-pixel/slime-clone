@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>スライム自作</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/battle.css">
+<link rel="stylesheet" href="styles/ui.css">
+</head>
+<body>
+<div id="app">
+  <div class="status-bar">
+    <div class="gold-display" id="goldDisplay">0</div>
+    <div class="stage-label" id="stageLabel">1-1</div>
+  </div>
+  <div class="battlefield" id="battlefield">
+    <div class="slime" id="slime"></div>
+  </div>
+  <div class="action-bar">
+    <button class="auto-toggle" id="autoToggle">AUTO<br>ON</button>
+    <div class="stage-progress">
+      <div class="stage-progress-bar" id="stageProgressBar"></div>
+      <div class="stage-progress-text" id="stageProgressText">0/5</div>
+    </div>
+  </div>
+  <div class="upgrades" id="upgrades"></div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

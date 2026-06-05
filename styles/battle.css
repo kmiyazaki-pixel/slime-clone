@@ -1,0 +1,194 @@
+/* ========= 戦場 ========= */
+.battlefield {
+  position: relative;
+  flex: 1;
+  background:
+    linear-gradient(180deg,
+      var(--bg-sky) 0%,
+      var(--bg-sky-low) 60%,
+      var(--bg-ground) 60%,
+      var(--bg-ground-low) 100%);
+  overflow: hidden;
+  min-height: 280px;
+  border-bottom: 3px solid #000;
+}
+
+/* 地平線 */
+.battlefield::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60%;
+  height: 4px;
+  background: #6b4423;
+  box-shadow: 0 2px 0 #4a2c10;
+}
+
+/* 雲っぽい飾り */
+.battlefield::before {
+  content: '☁  ☁    ☁';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 30px;
+  animation: cloudDrift 30s linear infinite;
+}
+
+@keyframes cloudDrift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100px); }
+}
+
+/* ========= スライム ========= */
+.slime {
+  position: absolute;
+  width: 60px;
+  height: 50px;
+  background: radial-gradient(ellipse at 35% 30%,
+    #86efac, var(--slime-body) 50%, var(--slime-shadow));
+  border: 3px solid #14532d;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  bottom: 28%;
+  left: 60px;
+  animation: slimeBounce 0.8s ease-in-out infinite;
+  z-index: 5;
+}
+
+.slime::before,
+.slime::after {
+  content: '';
+  position: absolute;
+  top: 35%;
+  width: 8px;
+  height: 10px;
+  background: #14532d;
+  border-radius: 50%;
+}
+.slime::before { left: 22%; }
+.slime::after  { right: 22%; }
+
+@keyframes slimeBounce {
+  0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+  50%      { transform: translateY(-3px) scaleX(0.97) scaleY(1.03); }
+}
+
+/* ========= 敵 ========= */
+.enemy {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(ellipse at 35% 30%,
+    #fca5a5, var(--enemy-body) 50%, var(--enemy-shadow));
+  border: 3px solid #7f1d1d;
+  border-radius: 8px 8px 4px 4px;
+  z-index: 4;
+  animation: enemyWalk 0.4s ease-in-out infinite alternate;
+  will-change: transform, left;
+}
+
+.enemy::before,
+.enemy::after {
+  content: '';
+  position: absolute;
+  top: 28%;
+  width: 6px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
+.enemy::before { left: 22%; }
+.enemy::after  { right: 22%; }
+
+@keyframes enemyWalk {
+  0%   { transform: rotate(-3deg) translateY(0); }
+  100% { transform: rotate(3deg) translateY(-2px); }
+}
+
+.enemy.hit {
+  filter: brightness(2) saturate(2);
+}
+
+.enemy.dying {
+  animation: enemyDie 0.3s ease-out forwards;
+}
+
+@keyframes enemyDie {
+  0%   { transform: scale(1) rotate(0); opacity: 1; }
+  100% { transform: scale(1.6) rotate(20deg); opacity: 0; }
+}
+
+/* ========= HPバー ========= */
+.hp-bar {
+  position: absolute;
+  top: -9px;
+  left: -2px;
+  right: -2px;
+  height: 5px;
+  background: var(--hp-bg);
+  border: 1px solid #000;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  background: linear-gradient(180deg, #4ade80, var(--hp-fill));
+  transition: width 0.1s linear;
+}
+
+/* ========= 弾 ========= */
+.projectile {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #fff, var(--projectile) 60%, var(--gold));
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--projectile), 0 0 4px #fff;
+  z-index: 6;
+  will-change: left, top;
+}
+
+/* ========= ダメージ数 ========= */
+.dmg-num {
+  position: absolute;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #000, -2px 2px 0 #000,
+    2px -2px 0 #000, -2px -2px 0 #000;
+  pointer-events: none;
+  animation: dmgFloat 0.7s ease-out forwards;
+  z-index: 7;
+}
+
+@keyframes dmgFloat {
+  0%   { transform: translateY(0) scale(1.2); opacity: 1; }
+  20%  { transform: translateY(-8px) scale(1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.7); opacity: 0; }
+}
+
+/* ========= ゴールド粒子 ========= */
+.gold-drop {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%,
+    #fef9c3, #f59e0b 70%, #92400e);
+  border: 2px solid #78350f;
+  border-radius: 50%;
+  z-index: 5;
+  pointer-events: none;
+  animation: goldFly 0.6s ease-in forwards;
+}
+
+@keyframes goldFly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  50%  { transform: translate(var(--mx), -30px) scale(1.2); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0.5); opacity: 0; }
+}

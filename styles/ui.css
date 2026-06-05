@@ -1,0 +1,212 @@
+/* ========= 上部ステータスバー ========= */
+.status-bar {
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 3px solid #000;
+  z-index: 10;
+}
+
+.gold-display {
+  background: linear-gradient(180deg, #fde047, #f59e0b);
+  border: 2px solid #92400e;
+  border-radius: 999px;
+  padding: 6px 16px 6px 38px;
+  font-weight: 900;
+  color: #422006;
+  position: relative;
+  font-size: 17px;
+  box-shadow: 0 3px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.gold-display::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  background: radial-gradient(circle at 30% 30%,
+    #fef9c3, #f59e0b 70%, #92400e);
+  border-radius: 50%;
+  border: 2px solid #78350f;
+}
+
+.stage-label {
+  background: linear-gradient(180deg, #ffffff, #f1f5f9);
+  border: 2px solid #1e293b;
+  border-radius: 999px;
+  padding: 4px 16px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-left: auto;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 0 #475569, inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ========= アクションバー (AUTO + 進捗) ========= */
+.action-bar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--ui-card);
+  border-bottom: 2px solid #000;
+  align-items: stretch;
+}
+
+.auto-toggle {
+  background: linear-gradient(180deg, #f59e0b, #b45309);
+  border: 2px solid #92400e;
+  color: #fff;
+  font-family: 'DotGothic16', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.auto-toggle:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.auto-toggle.off {
+  background: linear-gradient(180deg, #64748b, #475569);
+  border-color: #334155;
+  box-shadow: 0 3px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.auto-toggle.off:active {
+  box-shadow: 0 1px 0 #334155, inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.stage-progress {
+  flex: 1;
+  background: var(--ui-bg);
+  border: 2px solid #000;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  min-height: 32px;
+}
+
+.stage-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  transition: width 0.25s ease-out;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.stage-progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+}
+
+/* ========= 強化パネル ========= */
+.upgrades {
+  background: var(--ui-card);
+  padding: 10px;
+  max-height: 42vh;
+  overflow-y: auto;
+  border-top: 2px solid #000;
+}
+
+.upgrades::-webkit-scrollbar {
+  width: 6px;
+}
+
+.upgrades::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.upgrade-row {
+  background: linear-gradient(180deg, #475569, #334155);
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.upg-icon {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(180deg, #6366f1, #4338ca);
+  border: 2px solid #312e81;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.upg-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.upg-name  { font-weight: 700; font-size: 14px; color: #f1f5f9; }
+.upg-stat  { font-size: 12px; color: #cbd5e1; margin-top: 1px; }
+.upg-level { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+.upg-btn {
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+  border: 2px solid #1e3a8a;
+  color: #fff;
+  padding: 8px 12px;
+  font-weight: 900;
+  font-family: inherit;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #1e3a8a, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  min-width: 86px;
+  text-align: center;
+  transition: transform 0.05s, box-shadow 0.05s;
+  line-height: 1.2;
+}
+
+.upg-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #1e3a8a, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.upg-btn:disabled {
+  background: linear-gradient(180deg, #64748b, #475569);
+  border-color: #334155;
+  color: #94a3b8;
+  box-shadow: 0 3px 0 #334155;
+  cursor: not-allowed;
+}
+
+.upg-cost {
+  font-size: 11px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
