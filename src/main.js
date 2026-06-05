@@ -7,8 +7,9 @@ import { CONFIG } from './config.js';
 import { $battlefield } from './dom.js';
 import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
 import { fireAt, updateProjectiles } from './projectile.js';
-import { endBossFight } from './stage.js';
+import { endBossFight, startBossFight } from './stage.js';
 import { bindUI } from './effects.js';
+import { saveGame, loadGame } from './save.js';
 import {
   updateGoldDisplay,
   updateGemDisplay,
@@ -87,6 +88,9 @@ function init() {
   // effects.js に updateGoldDisplay を渡す (循環依存回避)
   bindUI(updateGoldDisplay);
 
+  // まずセーブから state を復元 (なければデフォルトのまま)
+  loadGame();
+
   setPlayerY();
   updatePlayerLv();
   updateGoldDisplay();
@@ -97,6 +101,11 @@ function init() {
   renderUpgrades();
   setupUI();
 
+  // ボス戦中にセーブされた = state.stage === 10 なら復帰時にボス戦を再開
+  if (state.stage === 10 && !state.inBossFight) {
+    startBossFight();
+  }
+
   // ウィンドウサイズ変更時にプレイヤー位置を再計算
   window.addEventListener('resize', setPlayerY);
 
@@ -104,6 +113,16 @@ function init() {
   setInterval(refreshUpgradeButtons, 200);
   // 放置タイマー (見た目用) は1秒ごとに更新
   setInterval(updateIdleTimer, 1000);
+
+  // セーブのトリガ:
+  //  - 10秒ごとの保険 (ゴールド増分など細かい変化用)
+  //  - タブが隠れた時 (アプリ閉じる/別タブ移動)
+  //  - ページ離脱前
+  setInterval(saveGame, 10000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) saveGame();
+  });
+  window.addEventListener('beforeunload', saveGame);
 
   requestAnimationFrame(gameLoop);
 }

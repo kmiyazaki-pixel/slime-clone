@@ -25,6 +25,7 @@ import {
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
+import { saveGame } from './save.js';
 
 // ゴールド表示を最新値に更新 (上部バーと強化パネル上の両方)
 export function updateGoldDisplay() {
@@ -121,6 +122,7 @@ function buyUpgrade(key) {
   u.apply(state);
   updateGoldDisplay();
   renderUpgrades();
+  saveGame();
 }
 
 // ボタンの有効/無効だけを軽く更新 (毎フレーム再描画は重いので)

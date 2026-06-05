@@ -14,6 +14,7 @@ import {
   showBossWarning,
 } from './ui.js';
 import { spawnBoss, removeAllEnemies } from './enemy.js';
+import { saveGame } from './save.js';
 
 // ステージ通算番号 (1-1=0, 1-2=1, ..., 2-1=10, ...)
 function stageIndex(world, stage) {
@@ -57,6 +58,7 @@ export function advanceStage() {
   if (state.stage < 9) {
     state.stage++;
     updateStageDisplay();
+    saveGame();
   } else if (state.stage === 9) {
     // Stage 9 完了 → Stage 10 (ボス戦) へ突入
     state.stage = 10;
@@ -115,6 +117,7 @@ export function endBossFight(victory) {
 
   hideBossTimer();
   updateStageDisplay();
+  saveGame();
 }
 
 // 再挑戦ボタンから呼ばれる - もう一度ボス戦をやる
