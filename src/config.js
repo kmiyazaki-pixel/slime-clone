@@ -65,4 +65,11 @@ export const CONFIG = {
   PIERCE: {
     LV_STEP: 5,              // この Lv ごとに +1 貫通
   },
+
+  // 放置報酬
+  IDLE_REWARD: {
+    MIN_SECONDS: 60,             // この秒数より短ければポップアップ出さない
+    CAP_SECONDS: 8 * 60 * 60,    // 上限 8時間
+    EFFICIENCY: 0.5,             // オフライン中は通常プレイの 50% の効率で稼ぐ
+  },
 };

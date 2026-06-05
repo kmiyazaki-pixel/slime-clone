@@ -39,6 +39,10 @@ const SCALAR_KEYS = [
 let cloudHook = null;
 export function bindCloud(cb) { cloudHook = cb; }
 
+// 直近に復元した snapshot の savedAt (放置報酬の経過時間計算用)
+let _lastSavedAt = null;
+export function getLastSavedTime() { return _lastSavedAt; }
+
 // 公開: state を平のオブジェクトにシリアライズ
 export function snapshot() {
   const data = { v: VERSION, savedAt: Date.now() };
@@ -65,6 +69,7 @@ export function restore(snap) {
       }
     }
   }
+  if (snap.savedAt) _lastSavedAt = snap.savedAt;
   return true;
 }
 

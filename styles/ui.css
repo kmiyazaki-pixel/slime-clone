@@ -918,6 +918,136 @@
 }
 
 /* ============================================================
+   6a. 放置報酬モーダル
+   ============================================================ */
+.idle-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 20px;
+}
+
+.idle-modal-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.idle-modal-card {
+  position: relative;
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  border: 3px solid #fde047;
+  border-radius: 18px;
+  padding: 20px 22px 16px;
+  width: 100%;
+  max-width: 320px;
+  z-index: 1;
+  box-shadow: 0 0 50px rgba(253, 224, 71, 0.45), 0 8px 0 #422006;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+}
+
+.idle-modal-emoji {
+  font-size: 48px;
+  line-height: 1;
+  margin-top: -8px;
+  animation: idleZzz 2.2s ease-in-out infinite;
+}
+
+@keyframes idleZzz {
+  0%, 100% { transform: rotate(-6deg); }
+  50%      { transform: rotate(6deg); }
+}
+
+.idle-modal-title {
+  font-family: 'DotGothic16', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fde047;
+  text-shadow: 2px 2px 0 #7c2d12;
+  letter-spacing: 2px;
+}
+
+.idle-modal-text {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.idle-modal-elapsed {
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.idle-modal-cap {
+  font-size: 11px;
+  color: #fca5a5;
+}
+
+.idle-modal-reward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.18), rgba(0, 0, 0, 0.3));
+  border: 2px solid #78350f;
+  border-radius: 12px;
+  padding: 10px 16px;
+  width: 100%;
+}
+
+.idle-modal-coin {
+  width: 28px;
+  height: 28px;
+  background: radial-gradient(circle at 30% 28%, #fef9c3, #f59e0b 70%, #92400e);
+  border: 2px solid #78350f;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.idle-modal-gold {
+  font-family: 'DotGothic16', monospace;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fde047;
+  text-shadow: 1px 1px 0 #422006;
+  letter-spacing: 1px;
+}
+
+.idle-modal-claim {
+  width: 100%;
+  background: linear-gradient(180deg, #86efac, #15803d);
+  border: 2px solid #14532d;
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #064e3b;
+  box-shadow: 0 4px 0 #14532d, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.idle-modal-claim:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #14532d, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================
    6. クラウドセーブ / ログインモーダル
    ============================================================ */
 

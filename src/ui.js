@@ -35,6 +35,12 @@ import {
   $authLogoutBtn,
   $authCloseBtn,
   $authLoginDot,
+  $idleModal,
+  $idleModalBg,
+  $idleModalElapsed,
+  $idleModalCapMsg,
+  $idleModalGold,
+  $idleModalClaimBtn,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
@@ -358,4 +364,37 @@ async function handleLogout() {
   await cloud.signOut();
   $authStatus.textContent = 'ログアウトしました';
   refreshAuthUI();
+}
+
+// =====================================================
+//  放置報酬ポップアップ
+// =====================================================
+
+function formatElapsed(seconds) {
+  const total = Math.floor(seconds);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (h > 0) return `${h}時間 ${m}分`;
+  if (m > 0) return `${m}分`;
+  return `${total}秒`;
+}
+
+// 公開: 放置報酬のモーダルを表示 (reward は idle.js の computeIdleReward の戻り値)
+export function showIdleReward(reward) {
+  $idleModalElapsed.textContent = formatElapsed(reward.rawSeconds);
+  $idleModalGold.textContent = formatNum(reward.gold);
+  $idleModalCapMsg.hidden = !reward.cappedAtMax;
+  $idleModal.hidden = false;
+
+  // 受け取り処理 (毎回付け替え)
+  $idleModalClaimBtn.onclick = () => {
+    state.gold += reward.gold;
+    updateGoldDisplay();
+    $idleModal.hidden = true;
+    saveGame();
+  };
+  // 背景クリックでも受け取り扱い (放置報酬は逃したくないので消すだけにせず加算)
+  $idleModalBg.onclick = () => {
+    $idleModalClaimBtn.onclick();
+  };
 }

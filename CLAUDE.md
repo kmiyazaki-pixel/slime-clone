@@ -45,7 +45,7 @@
 - [ ] **Phase 4**: 召喚、ペット、放置報酬、セーブ機能
   - [x] セーブ機能 (localStorage)
   - [x] クラウド同期 (Supabase + Magic Link 認証) → 別端末でログインで進捗共有
-  - [ ] 放置報酬
+  - [x] 放置報酬 (上限8h、効率50%、起動時にポップアップで一括受け取り)
   - [ ] ペット
   - [ ] 召喚
 
@@ -70,6 +70,7 @@
     ├── effects.js      ダメージ数字、ゴールド粒子
     ├── save.js         localStorage への保存・復元 (Phase 4)
     ├── cloud.js        Supabase 同期と Magic Link 認証 (Phase 4)
+    ├── idle.js         放置報酬の計算 (Phase 4)
     └── ui.js           UI描画
 ```
 

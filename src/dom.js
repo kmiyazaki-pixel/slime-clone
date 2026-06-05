@@ -46,3 +46,11 @@ export const $authSyncBtn        = document.getElementById('authSyncBtn');
 export const $authLogoutBtn      = document.getElementById('authLogoutBtn');
 export const $authCloseBtn       = document.getElementById('authCloseBtn');
 export const $authLoginDot       = document.getElementById('authLoginDot');
+
+// 放置報酬モーダル
+export const $idleModal          = document.getElementById('idleModal');
+export const $idleModalBg        = document.getElementById('idleModalBg');
+export const $idleModalElapsed   = document.getElementById('idleModalElapsed');
+export const $idleModalCapMsg    = document.getElementById('idleModalCapMsg');
+export const $idleModalGold      = document.getElementById('idleModalGold');
+export const $idleModalClaimBtn  = document.getElementById('idleModalClaimBtn');

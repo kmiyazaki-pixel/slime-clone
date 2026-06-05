@@ -122,6 +122,25 @@
     <div class="upgrades" id="upgrades"></div>
   </section>
 
+  <!-- ========= 放置報酬モーダル ========= -->
+  <div class="idle-modal" id="idleModal" hidden>
+    <div class="idle-modal-bg" id="idleModalBg"></div>
+    <div class="idle-modal-card">
+      <div class="idle-modal-emoji">💤</div>
+      <div class="idle-modal-title">おかえり!</div>
+      <div class="idle-modal-text">
+        不在中の獲得ゴールド<br>
+        <span class="idle-modal-elapsed" id="idleModalElapsed">0時間 0分</span>
+      </div>
+      <div class="idle-modal-cap" id="idleModalCapMsg" hidden>(上限8時間に到達)</div>
+      <div class="idle-modal-reward">
+        <div class="idle-modal-coin"></div>
+        <div class="idle-modal-gold" id="idleModalGold">0</div>
+      </div>
+      <button class="idle-modal-claim" id="idleModalClaimBtn">受け取る</button>
+    </div>
+  </div>
+
   <!-- ========= クラウド/ログインモーダル ========= -->
   <div class="auth-modal" id="authModal" hidden>
     <div class="auth-modal-bg" id="authModalBg"></div>

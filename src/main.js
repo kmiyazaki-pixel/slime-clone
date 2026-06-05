@@ -9,7 +9,8 @@ import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
 import { fireAt, updateProjectiles } from './projectile.js';
 import { endBossFight, startBossFight } from './stage.js';
 import { bindUI } from './effects.js';
-import { saveGame, loadGame, bindCloud as bindCloudSave } from './save.js';
+import { saveGame, loadGame, bindCloud as bindCloudSave, getLastSavedTime } from './save.js';
+import { computeIdleReward } from './idle.js';
 import {
   updateGoldDisplay,
   updateGemDisplay,
@@ -24,6 +25,7 @@ import {
   renderAll,
   bindCloud as bindCloudUI,
   refreshAuthUI,
+  showIdleReward,
 } from './ui.js';
 
 // プレイヤーの位置を戦場の高さに合わせて設定
@@ -109,6 +111,19 @@ function init() {
     startBossFight();
   }
 
+  // 放置報酬チェック (起動時に1回だけ。クラウド同期完了後 or タイムアウトで実行)
+  let idleChecked = false;
+  function checkIdleReward() {
+    if (idleChecked) return;
+    idleChecked = true;
+    const savedAt = getLastSavedTime();
+    if (!savedAt) return; // セーブがない初回起動は対象外
+    const elapsed = (Date.now() - savedAt) / 1000;
+    if (elapsed < CONFIG.IDLE_REWARD.MIN_SECONDS) return;
+    const reward = computeIdleReward(elapsed);
+    if (reward.gold > 0) showIdleReward(reward);
+  }
+
   // クラウド同期 (Supabase) は遅延ロード。失敗してもゲームは続行
   import('./cloud.js').then(cloud => {
     bindCloudSave(cloud.schedulePush);
@@ -125,12 +140,18 @@ function init() {
           // クラウドが空 or ローカルが新しい → 今の状態を push しておく
           cloud.schedulePush();
         }
+        // クラウド同期完了後に放置報酬を判定 (別端末プレイ分は不在扱いにしない)
+        checkIdleReward();
       }
       refreshAuthUI();
     });
   }).catch(e => {
     console.warn('[cloud] unavailable, offline mode:', e && e.message);
+    checkIdleReward();
   });
+
+  // フェイルセーフ: クラウドが 3秒以内に応答しなくても放置報酬は出す
+  setTimeout(checkIdleReward, 3000);
 
   // ウィンドウサイズ変更時にプレイヤー位置を再計算
   window.addEventListener('resize', setPlayerY);
