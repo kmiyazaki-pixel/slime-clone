@@ -86,6 +86,8 @@ export const CONFIG = {
       cost: 5000,
       desc: '攻撃力 +50%',
       apply: (s) => { s.petAtkMul *= 1.5; },
+      fireInterval: 900,         // ms
+      damageRatio: 0.5,          // state.attack の何倍を発射するか
     },
     coinDrop: {
       name: 'コインドロップ',
@@ -93,6 +95,8 @@ export const CONFIG = {
       cost: 4000,
       desc: 'ゴールド +50%',
       apply: (s) => { s.petGoldMul *= 1.5; },
+      fireInterval: 1500,
+      damageRatio: 0.25,
     },
     lucky: {
       name: 'ラッキー',
@@ -100,6 +104,8 @@ export const CONFIG = {
       cost: 6000,
       desc: 'クリ確率 +20%',
       apply: (s) => { s.petCritAdd += 0.2; },
+      fireInterval: 1500,
+      damageRatio: 0.25,
     },
     sharp: {
       name: 'シャープ',
@@ -107,6 +113,8 @@ export const CONFIG = {
       cost: 8000,
       desc: '貫通 +2',
       apply: (s) => { s.petPierceAdd += 2; },
+      fireInterval: 1500,
+      damageRatio: 0.25,
     },
   },
 };

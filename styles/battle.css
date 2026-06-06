@@ -388,6 +388,14 @@
   will-change: left, top;
 }
 
+/* ペット弾 (小さい緑色、スライム弾と区別) */
+.projectile.pet-projectile {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #fff, #86efac 55%, #15803d);
+  box-shadow: 0 0 7px #4ade80, 0 0 2px #fff;
+}
+
 /* ========= ダメージ数 ========= */
 .dmg-num {
   position: absolute;

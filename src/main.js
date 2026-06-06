@@ -6,7 +6,8 @@ import { state } from './state.js';
 import { CONFIG } from './config.js';
 import { $battlefield } from './dom.js';
 import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
-import { fireAt, updateProjectiles } from './projectile.js';
+import { fireAt, firePetAt, updateProjectiles } from './projectile.js';
+import { getOwnedPetIds } from './pet.js';
 import { endBossFight, startBossFight } from './stage.js';
 import { bindUI } from './effects.js';
 import { saveGame, loadGame, bindCloud as bindCloudSave, getLastSavedTime } from './save.js';
@@ -92,6 +93,25 @@ function gameLoop(now) {
     if (t) {
       fireAt(t);
       state.lastShot = now;
+    }
+  }
+
+  // ペットも自前で撃つ (各ペット個別のクールダウン)
+  const ownedPets = getOwnedPetIds();
+  if (ownedPets.length > 0) {
+    const target = findNearestEnemy();
+    if (target) {
+      ownedPets.forEach((petId, idx) => {
+        const def = CONFIG.PETS[petId];
+        if (!def) return;
+        const pet = state.pets[petId];
+        if (!pet.lastShot) pet.lastShot = 0;
+        if (now - pet.lastShot > def.fireInterval) {
+          const damage = state.attack * def.damageRatio;
+          firePetAt(target, idx, damage);
+          pet.lastShot = now;
+        }
+      });
     }
   }
 

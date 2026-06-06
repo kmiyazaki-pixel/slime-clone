@@ -31,6 +31,43 @@ export function fireAt(target) {
   }
 }
 
+// ペットの自前攻撃。ペットスプライトの位置から、シンプルな単発弾を撃つ
+// (クリ/貫通/マルチショットは適用しない。state.attack * damageRatio のみ)
+export function firePetAt(target, petIndex, damage) {
+  const sx = 20 + petIndex * 22;   // renderPetSprites と一致させる
+  const sy = state.player.y + (petIndex % 2 === 0 ? 6 : 0);
+
+  const half = target.size / 2;
+  const dx = (target.x + half) - sx;
+  const dy = (target.y + half) - sy;
+  const dist = Math.hypot(dx, dy);
+  const speed = CONFIG.PROJECTILE.SPEED * 0.85;
+
+  const p = {
+    id: state._projId++,
+    x: sx,
+    y: sy,
+    vx: (dx / dist) * speed,
+    vy: (dy / dist) * speed,
+    damage: Math.max(1, Math.floor(damage)),
+    targetId: target.id,
+    hitIds: new Set(),
+    piercesLeft: 0,                // ペット弾は貫通しない
+    life: CONFIG.PROJECTILE.LIFE,
+    el: null,
+    isPet: true,
+  };
+
+  const el = document.createElement('div');
+  el.className = 'projectile pet-projectile';
+  el.style.left = (p.x - 5) + 'px';
+  el.style.top  = (p.y - 5) + 'px';
+  $battlefield.appendChild(el);
+  p.el = el;
+
+  state.projectiles.push(p);
+}
+
 function spawnSingleProjectile(target, angle) {
   const sx = state.player.x + 30;
   const sy = state.player.y;
