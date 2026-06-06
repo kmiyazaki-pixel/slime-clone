@@ -100,7 +100,8 @@ export const state = {
       baseCost: 25,
       costMul: 1.20,
       apply: (s) => {
-        s.shotInterval = Math.max(120, s.shotInterval * 0.94);
+        // 下限 50ms (≈20発/秒、Lv 41 付近で cap)。ペット/スライムの乗算は cap の外
+        s.shotInterval = Math.max(50, s.shotInterval * 0.94);
       },
     },
     multiShot: {

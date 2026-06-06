@@ -117,6 +117,7 @@ function isUpgradeMaxed(key) {
   if (key === 'critRate') return state.critChance >= 1.0;
   if (key === 'multiShot') return state.doubleShotChance >= 1.0;
   if (key === 'tripleShot') return state.tripleShotChance >= 1.0;
+  if (key === 'fireRate')  return state.shotInterval <= 50;
   return false;
 }
 
