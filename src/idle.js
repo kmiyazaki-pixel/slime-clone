@@ -20,9 +20,12 @@ function dpsEstimate() {
   // クリ込みの期待ダメージ倍率 (確率はペット + スライム加算)
   const critRate = Math.min(1, state.critChance + state.petCritAdd + state.slimeCritAdd);
   const critBonus = 1 + critRate * (state.critMultiplier - 1);
-  // ダブルショットの期待発射数: 1 + 確率 (確率は最大 1.0 で頭打ち)
+  // ダブル/トリプルショットの期待発射数 (優先カスケードに合わせる):
+  //   1発 + 2 * tripleP + (1 - tripleP) * doubleP
+  // (トリプル当選で +2発、外れたらダブル判定で +1発)
   const doubleP = Math.min(1, state.doubleShotChance + state.petDoubleShotAdd);
-  const expectedShots = 1 + doubleP;
+  const tripleP = Math.min(1, state.tripleShotChance + state.petTripleShotAdd);
+  const expectedShots = 1 + 2 * tripleP + (1 - tripleP) * doubleP;
   const atk = state.attack * state.petAtkMul * state.slimeAtkMul;
   return shotsPerSec * atk * critBonus * expectedShots;
 }

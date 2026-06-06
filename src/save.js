@@ -32,6 +32,7 @@ const SCALAR_KEYS = [
   'goldMultiplier',
   'pierceCount',
   'doubleShotChance',
+  'tripleShotChance',
   'world',
   'stage',
   'killsInStage',
@@ -93,10 +94,14 @@ export function restore(snap) {
     }
   }
   recomputePetBuffs();
-  // 旧マルチショット (shotCount-based) → 新ダブルショット (chance-based) のマイグレーション
-  // 旧セーブには doubleShotChance フィールドが無いので、multiShot.level から再計算する
+  // 旧マルチショット (shotCount-based) → 新ダブル/トリプル (chance-based) のマイグレーション
+  // 旧セーブには doubleShotChance / tripleShotChance フィールドが無いので、
+  // それぞれ multiShot.level / tripleShot.level から再計算する
   if (state.upgrades.multiShot) {
     state.doubleShotChance = Math.min(1, state.upgrades.multiShot.level / 100);
+  }
+  if (state.upgrades.tripleShot) {
+    state.tripleShotChance = Math.min(1, state.upgrades.tripleShot.level / 100);
   }
   state.shotCount = 1;            // legacy: 新仕様で未使用なので 1 に固定
   state.petShotAdd = 0;           // legacy: 新仕様で未使用

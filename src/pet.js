@@ -22,6 +22,7 @@ export function recomputePetBuffs() {
   state.petFireRateMul = 1;
   state.petShotAdd = 0;         // legacy: 旧マルチショット
   state.petDoubleShotAdd = 0;   // ダブルペット所有時に +0.25
+  state.petTripleShotAdd = 0;   // 将来用 (現状は専用ペットなし)
   for (const id in state.pets) {
     if (state.pets[id] && state.pets[id].owned && CONFIG.PETS[id]) {
       CONFIG.PETS[id].apply(state);

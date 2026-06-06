@@ -92,6 +92,7 @@ function getStatLabel(key) {
   if (key === 'attack')    return formatNum(state.attack);
   if (key === 'fireRate')  return `${state.shotInterval.toFixed(0)}ms`;
   if (key === 'multiShot') return `${(state.doubleShotChance * 100).toFixed(0)}%`;
+  if (key === 'tripleShot') return `${(state.tripleShotChance * 100).toFixed(0)}%`;
   if (key === 'critRate')  return `${(state.critChance * 100).toFixed(0)}%`;
   if (key === 'critDmg')   return `x${state.critMultiplier.toFixed(1)}`;
   if (key === 'goldBoost') return `+${Math.round((state.goldMultiplier - 1) * 100)}%`;
@@ -103,6 +104,7 @@ function getStatName(key) {
   if (key === 'attack')    return 'ダメージ';
   if (key === 'fireRate')  return '攻撃間隔';
   if (key === 'multiShot') return '2発目の確率';
+  if (key === 'tripleShot') return '3発撃てる確率';
   if (key === 'critRate')  return '会心の確率';
   if (key === 'critDmg')   return '会心ダメージ';
   if (key === 'goldBoost') return 'ゴールド倍率';
@@ -114,6 +116,7 @@ function getStatName(key) {
 function isUpgradeMaxed(key) {
   if (key === 'critRate') return state.critChance >= 1.0;
   if (key === 'multiShot') return state.doubleShotChance >= 1.0;
+  if (key === 'tripleShot') return state.tripleShotChance >= 1.0;
   return false;
 }
 

@@ -17,9 +17,10 @@ export const state = {
   attack: 1,
   shotInterval: 600,   // ms
 
-  // Phase 3 → ダブルショットに仕様変更
+  // Phase 3 → ダブル/トリプルショットに仕様変更
   shotCount: 1,        // legacy: 旧マルチショットの同時発射数。新仕様では未使用 (初期値で固定)
   doubleShotChance: 0.01, // Lv 1 で 1% (level/100、Lv 100 で 100% MAX)
+  tripleShotChance: 0.01, // Lv 1 で 1% (level/100、Lv 100 で 100% MAX)
   critChance: 0,       // 0-1
   critMultiplier: 2.0, // クリ時のダメージ倍率
   goldMultiplier: 1.0, // ゴールド報酬の倍率
@@ -34,6 +35,7 @@ export const state = {
   petFireRateMul: 1,   // shotInterval に掛ける乗算 (小さいほど高速)
   petShotAdd: 0,       // legacy: 旧 shotCount 加算。新仕様では未使用
   petDoubleShotAdd: 0, // doubleShotChance に加算 (ダブルペット所有時 +0.25)
+  petTripleShotAdd: 0, // tripleShotChance に加算 (未来用、現状は専用ペットなし)
 
   // スライム: 所有マップ + 装備中の id + 装備スライムからのバフ
   // (みどりスライムだけ最初から所有 + 装備済み)
@@ -110,6 +112,17 @@ export const state = {
       apply: (s) => {
         // Lv N で N% の確率で 2発目を撃つ。Lv 100 で 100% MAX
         s.doubleShotChance = Math.min(1, s.upgrades.multiShot.level / 100);
+      },
+    },
+    tripleShot: {
+      name: 'トリプルショット',
+      icon: '✨',
+      level: 1,
+      baseCost: 1000,           // 後発の強化なので高め
+      costMul: 1.10,
+      apply: (s) => {
+        // Lv N で N% の確率で「2発目+3発目」を撃つ (= 計3発)。Lv 100 で 100% MAX
+        s.tripleShotChance = Math.min(1, s.upgrades.tripleShot.level / 100);
       },
     },
     critRate: {

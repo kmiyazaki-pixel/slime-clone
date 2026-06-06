@@ -19,24 +19,39 @@ function aimAngle(target) {
   return Math.atan2(dy, dx);
 }
 
-// ターゲットに向けて弾を発射する公開API
-//   - まず 1発撃つ
-//   - state.doubleShotChance + state.petDoubleShotAdd の確率で
-//     DELAY_MS 後にもう 1発 (ダブルショット)
-//   - 2発目の時点でターゲットが死んでたら、最寄りの敵に当てる
-export function fireAt(target) {
-  spawnSingleProjectile(target, aimAngle(target));
-
-  const chance = Math.min(1, state.doubleShotChance + state.petDoubleShotAdd);
-  if (Math.random() >= chance) return;
-
-  // 2発目を予約
-  const targetId = target.id;
+// 2発目以降を遅延予約するヘルパ
+//   targetId が生きてればその敵、死んでたら最寄り敵に当てる
+function scheduleExtraShot(targetId, delayMs) {
   setTimeout(() => {
     let t = state.enemies.find(e => e.id === targetId && e.alive);
     if (!t) t = findNearestEnemy();
     if (t) spawnSingleProjectile(t, aimAngle(t));
-  }, CONFIG.DOUBLE_SHOT.DELAY_MS);
+  }, delayMs);
+}
+
+// ターゲットに向けて弾を発射する公開API
+//   - まず 1発撃つ (確定)
+//   - 「トリプル → ダブル」の順に判定する優先カスケード:
+//     - トリプル当選 → +2発 (合計3発)
+//     - 外れた時だけダブル判定 → 当選で +1発 (合計2発)
+//     - どちらも外れ → 1発のみ
+//   - 2発目以降の時点で元ターゲットが死んでたら最寄りの敵に振り替え
+export function fireAt(target) {
+  spawnSingleProjectile(target, aimAngle(target));
+
+  const tripleC = Math.min(1, state.tripleShotChance + state.petTripleShotAdd);
+  const doubleC = Math.min(1, state.doubleShotChance + state.petDoubleShotAdd);
+  const targetId = target.id;
+  const dt = CONFIG.DOUBLE_SHOT.DELAY_MS;
+
+  if (Math.random() < tripleC) {
+    // トリプル: 2発目と 3発目を予約
+    scheduleExtraShot(targetId, dt);
+    scheduleExtraShot(targetId, dt * 2);
+  } else if (Math.random() < doubleC) {
+    // ダブル: 2発目だけ予約
+    scheduleExtraShot(targetId, dt);
+  }
 }
 
 // ペットの自前攻撃。ペットスプライトの位置から、シンプルな単発弾を撃つ

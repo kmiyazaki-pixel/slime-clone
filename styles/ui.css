@@ -631,6 +631,11 @@
   border-color: #155e75;
 }
 
+.up-tripleShot .upg-icon {
+  background: linear-gradient(180deg, #f0abfc, #c026d3);
+  border-color: #86198f;
+}
+
 .up-critRate .upg-icon {
   background: linear-gradient(180deg, #fda4af, #be123c);
   border-color: #4c0519;
