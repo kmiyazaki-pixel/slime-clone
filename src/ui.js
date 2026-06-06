@@ -167,11 +167,24 @@ function buyUpgrade(key) {
 }
 
 // ボタンの有効/無効だけを軽く更新 (毎フレーム再描画は重いので)
+// 強化 + ペット購入 + スライム購入 のボタンを全部対象にする
 export function refreshUpgradeButtons() {
   $upgrades.querySelectorAll('button[data-key]').forEach(btn => {
     const key = btn.dataset.key;
     const u = state.upgrades[key];
     btn.disabled = isUpgradeMaxed(key) || state.gold < upgradeCost(u);
+  });
+  // ペット購入ボタン
+  $petGrid.querySelectorAll('button[data-pet-id]').forEach(btn => {
+    const id = btn.dataset.petId;
+    const def = CONFIG.PETS[id];
+    if (def) btn.disabled = state.gold < def.cost;
+  });
+  // スライム購入ボタン (data-action="buy" のみ。装備ボタンは触らない)
+  $slimeGrid.querySelectorAll('button[data-action="buy"]').forEach(btn => {
+    const id = btn.dataset.slimeId;
+    const def = CONFIG.SLIMES[id];
+    if (def) btn.disabled = state.gold < def.cost;
   });
 }
 
