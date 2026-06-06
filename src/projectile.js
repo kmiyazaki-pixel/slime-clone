@@ -81,7 +81,8 @@ function spawnSingleProjectile(target, angle) {
     vx: Math.cos(angle) * speed,
     vy: Math.sin(angle) * speed,
     // ペットの攻撃バフを反映 (アタッカー所有時 ×1.5 など)
-    damage: state.attack * state.petAtkMul,
+    // ペットとスライムの攻撃乗算を両方反映
+    damage: state.attack * state.petAtkMul * state.slimeAtkMul,
     targetId: target.id,
     hitIds: new Set(),
     // ペットの貫通バフを加算 (シャープ所有時 +2 など)
@@ -122,8 +123,8 @@ export function updateProjectiles(dt) {
       const dy = tcy - p.y;
 
       if (Math.hypot(dx, dy) < t.hitRadius) {
-        // 命中 (クリ確率はペットバフを加算)
-        const isCrit = Math.random() < (state.critChance + state.petCritAdd);
+        // 命中 (クリ確率はペット + スライムのバフを加算)
+        const isCrit = Math.random() < (state.critChance + state.petCritAdd + state.slimeCritAdd);
         const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? state.critMultiplier : 1)));
 
         t.hp -= dmg;

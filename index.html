@@ -79,8 +79,8 @@
       <button class="side-skill ss-3"></button>
     </aside>
 
-    <!-- プレイヤー -->
-    <div class="slime" id="slime"></div>
+    <!-- プレイヤー (data-slime-type で色を切替) -->
+    <div class="slime" id="slime" data-slime-type="green"></div>
 
     <!-- ボスタイマー (中央上、ボス戦中のみ表示) -->
     <div class="boss-timer" id="bossTimer" hidden>
@@ -120,6 +120,21 @@
       </div>
     </div>
     <div class="upgrades" id="upgrades"></div>
+  </section>
+
+  <!-- ========= 4c. スライムパネル (hero タブ = 左端) ========= -->
+  <section class="slime-panel" id="slimePanel" hidden>
+    <div class="upgrade-currency-row">
+      <div class="up-currency">
+        <div class="up-currency-icon"></div>
+        <span id="slimePanelGold">0</span>
+      </div>
+    </div>
+    <div class="pet-panel-header">
+      <div class="pet-panel-title">スライム</div>
+      <div class="pet-panel-count" id="slimePanelCount">1 / 5</div>
+    </div>
+    <div class="pet-grid" id="slimeGrid"></div>
   </section>
 
   <!-- ========= 4b. ペットパネル (pet タブ) ========= -->

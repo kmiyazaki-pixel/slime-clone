@@ -14,15 +14,16 @@ import { enemyHpAt, enemyRewardAt } from './stage.js';
 
 // 現在の構成での DPS (1秒あたりの総ダメージ)
 function dpsEstimate() {
-  // クイックペットを反映した実効 interval
-  const effectiveInterval = state.shotInterval * state.petFireRateMul;
+  // ペット + スライムを反映した実効 interval
+  const effectiveInterval = state.shotInterval * state.petFireRateMul * state.slimeFireRateMul;
   const shotsPerSec = 1000 / effectiveInterval;
-  // クリ込みの期待ダメージ倍率 (確率はペット込み)
-  const critRate = Math.min(1, state.critChance + state.petCritAdd);
+  // クリ込みの期待ダメージ倍率 (確率はペット + スライム加算)
+  const critRate = Math.min(1, state.critChance + state.petCritAdd + state.slimeCritAdd);
   const critBonus = 1 + critRate * (state.critMultiplier - 1);
-  // ペットの攻撃乗算と発射数追加を含める
+  // ペット + スライムの攻撃乗算と発射数追加を含める
   const shotCount = state.shotCount + state.petShotAdd;
-  return shotsPerSec * (state.attack * state.petAtkMul) * critBonus * shotCount;
+  const atk = state.attack * state.petAtkMul * state.slimeAtkMul;
+  return shotsPerSec * atk * critBonus * shotCount;
 }
 
 // 1秒あたりに倒せる雑魚の数
@@ -41,8 +42,8 @@ function goldPerSecond() {
   const w = state.world;
   const s = Math.min(state.stage, 9);
   const kps = killsPerSecond(w, s);
-  // ペットのゴールド乗算も含める
-  const goldPerKill = enemyRewardAt(w, s) * state.goldMultiplier * state.petGoldMul;
+  // ペット + スライム両方のゴールド乗算を含める
+  const goldPerKill = enemyRewardAt(w, s) * state.goldMultiplier * state.petGoldMul * state.slimeGoldMul;
   return kps * goldPerKill;
 }
 

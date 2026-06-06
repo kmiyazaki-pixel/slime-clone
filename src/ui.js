@@ -46,18 +46,25 @@ import {
   $petGrid,
   $petPanelGold,
   $petPanelCount,
+  $slimePanel,
+  $slimeGrid,
+  $slimePanelGold,
+  $slimePanelCount,
+  $slime,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
 import { saveGame } from './save.js';
 import { buyPet, getOwnedPetIds } from './pet.js';
+import { buySlime, equipSlime } from './slime.js';
 
-// ゴールド表示を最新値に更新 (上部バー、強化パネル、ペットパネル全部)
+// ゴールド表示を最新値に更新 (上部バー、強化パネル、ペットパネル、スライムパネル)
 export function updateGoldDisplay() {
   const v = formatNum(state.gold);
   $goldDisplay.textContent = v;
   $upgradeGold.textContent = v;
   $petPanelGold.textContent = v;
+  $slimePanelGold.textContent = v;
 }
 
 // ジェム表示 (見た目だけ)
@@ -263,12 +270,12 @@ export function setupUI() {
     retryBoss();
   });
 
-  // 下部ナビ: タブ切替 (forge / pet は専用パネル、他は forge にフォールバック)
+  // 下部ナビ: タブ切替 (hero=スライム / pet=ペット / forge=強化、他はforgeにフォールバック)
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
-      if (tab === 'pet') {
-        activateTab('pet');
+      if (tab === 'hero' || tab === 'pet') {
+        activateTab(tab);
       } else {
         activateTab('forge');
       }
@@ -300,6 +307,7 @@ export function renderAll() {
   updateAutoButton();
   renderUpgrades();
   renderPetSprites();
+  updateSlimeVisual();
 }
 
 // =====================================================
@@ -424,18 +432,21 @@ export function showIdleReward(reward) {
 //  ペット (専用パネル + スプライト)
 // =====================================================
 
-// 下部ナビのタブ切替: forge / pet で出すパネルを切り替える
-//   現状ペット以外はぜんぶ強化パネル (forge) にフォールバックする
+// 下部ナビのタブ切替: hero / pet / forge で出すパネルを切り替える
+//   その他 (dungeon / shop) はぜんぶ強化パネル (forge) にフォールバックする
 function activateTab(tabName) {
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`.bottom-nav .nav-btn[data-tab="${tabName}"]`);
   if (btn) btn.classList.add('active');
 
   const showPet = tabName === 'pet';
-  $upgradePanel.hidden = showPet;
+  const showHero = tabName === 'hero';
+  $upgradePanel.hidden = showPet || showHero;
   $petPanel.hidden = !showPet;
+  $slimePanel.hidden = !showHero;
 
   if (showPet) renderPetGrid();
+  if (showHero) renderSlimeGrid();
 }
 
 // 全体描画 (購入・state 変化のたびに呼ぶ)
@@ -484,6 +495,80 @@ function handleBuyPet(petId) {
   renderPetSprites();
   // 強化パネルの表示値 (クリ確率など) もペット買うと変わる
   renderUpgrades();
+  saveGame();
+}
+
+// =====================================================
+//  スライム選択パネル (左タブ = hero)
+// =====================================================
+
+// 戦場のスライムの色を装備中の id に合わせる
+export function updateSlimeVisual() {
+  $slime.dataset.slimeType = state.activeSlimeId || 'green';
+}
+
+// スライムグリッドを再描画
+function renderSlimeGrid() {
+  const totalCount = Object.keys(CONFIG.SLIMES).length;
+  const ownedCount = Object.values(state.slimes).filter(s => s && s.owned).length;
+  $slimePanelCount.textContent = `${ownedCount} / ${totalCount}`;
+
+  $slimeGrid.innerHTML = '';
+  for (const [id, def] of Object.entries(CONFIG.SLIMES)) {
+    const owned = !!(state.slimes[id] && state.slimes[id].owned);
+    const active = state.activeSlimeId === id;
+    const canAfford = state.gold >= def.cost;
+
+    const card = document.createElement('div');
+    card.className = 'pet-card' + (owned ? ' owned' : '');
+    if (active) card.classList.add('equipped');
+
+    let actionHtml;
+    if (active) {
+      actionHtml = `<div class="pet-card-owned-label">装備中</div>`;
+    } else if (owned) {
+      actionHtml = `<button class="pet-card-buy" data-action="equip" data-slime-id="${id}">装備</button>`;
+    } else {
+      actionHtml = `<button class="pet-card-buy" data-action="buy" data-slime-id="${id}" ${canAfford ? '' : 'disabled'}>
+        <span class="coin-icon-mini"></span>${formatNum(def.cost)}
+      </button>`;
+    }
+
+    card.innerHTML = `
+      <div class="pet-card-icon">
+        <div class="slime-card-preview" data-slime-type="${id}"></div>
+      </div>
+      <div class="pet-card-name">${def.name}</div>
+      <div class="pet-card-desc">${def.desc}</div>
+      ${actionHtml}
+    `;
+    $slimeGrid.appendChild(card);
+  }
+
+  $slimeGrid.querySelectorAll('button[data-slime-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.slimeId;
+      const action = btn.dataset.action;
+      if (action === 'buy') handleBuySlime(id);
+      else if (action === 'equip') handleEquipSlime(id);
+    });
+  });
+}
+
+function handleBuySlime(slimeId) {
+  if (!buySlime(slimeId)) return;
+  // 購入したら自動で装備
+  equipSlime(slimeId);
+  updateGoldDisplay();
+  updateSlimeVisual();
+  renderSlimeGrid();
+  saveGame();
+}
+
+function handleEquipSlime(slimeId) {
+  if (!equipSlime(slimeId)) return;
+  updateSlimeVisual();
+  renderSlimeGrid();
   saveGame();
 }
 

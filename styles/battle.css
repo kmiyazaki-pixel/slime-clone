@@ -201,13 +201,45 @@
 }
 
 /* ========= スライム ========= */
+/* 色は data-slime-type で切り替える (CSS変数で定義) */
+[data-slime-type="green"] {
+  --slime-body: #4ade80;
+  --slime-shadow: #16a34a;
+  --slime-eye: #14532d;
+  --slime-highlight: #86efac;
+}
+[data-slime-type="red"] {
+  --slime-body: #f87171;
+  --slime-shadow: #b91c1c;
+  --slime-eye: #7f1d1d;
+  --slime-highlight: #fecaca;
+}
+[data-slime-type="blue"] {
+  --slime-body: #60a5fa;
+  --slime-shadow: #1d4ed8;
+  --slime-eye: #1e3a8a;
+  --slime-highlight: #bfdbfe;
+}
+[data-slime-type="gold"] {
+  --slime-body: #fbbf24;
+  --slime-shadow: #b45309;
+  --slime-eye: #78350f;
+  --slime-highlight: #fef3c7;
+}
+[data-slime-type="purple"] {
+  --slime-body: #c084fc;
+  --slime-shadow: #7e22ce;
+  --slime-eye: #4c1d95;
+  --slime-highlight: #e9d5ff;
+}
+
 .slime {
   position: absolute;
   width: 60px;
   height: 50px;
   background: radial-gradient(ellipse at 35% 30%,
-    #86efac, var(--slime-body) 50%, var(--slime-shadow));
-  border: 3px solid #14532d;
+    var(--slime-highlight, #86efac), var(--slime-body) 50%, var(--slime-shadow));
+  border: 3px solid var(--slime-eye, #14532d);
   border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   bottom: 28%;
   left: 60px;
@@ -222,11 +254,34 @@
   top: 35%;
   width: 8px;
   height: 10px;
-  background: #14532d;
+  background: var(--slime-eye, #14532d);
   border-radius: 50%;
 }
 .slime::before { left: 22%; }
 .slime::after  { right: 22%; }
+
+/* スライムカード用の小さいプレビュー (ペットパネルと同じ .pet-card-icon 枠に入れる) */
+.slime-card-preview {
+  width: 40px;
+  height: 32px;
+  background: radial-gradient(ellipse at 35% 30%,
+    var(--slime-highlight, #86efac), var(--slime-body) 50%, var(--slime-shadow));
+  border: 2.5px solid var(--slime-eye, #14532d);
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  position: relative;
+}
+.slime-card-preview::before,
+.slime-card-preview::after {
+  content: '';
+  position: absolute;
+  top: 35%;
+  width: 5px;
+  height: 7px;
+  background: var(--slime-eye, #14532d);
+  border-radius: 50%;
+}
+.slime-card-preview::before { left: 22%; }
+.slime-card-preview::after  { right: 22%; }
 
 @keyframes slimeBounce {
   /* 縦の弾みに加えて、左右に微かに揺らして「歩いてる」感を出す */

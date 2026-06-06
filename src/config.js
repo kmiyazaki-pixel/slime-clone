@@ -76,6 +76,41 @@ export const CONFIG = {
   // スライムの移動 (敵集団に向かって走るモード)
   TRAVEL_DURATION: 1.5,          // ステージ間で travel モードに入っている秒数
 
+  // スライムの種類 (装備中の1体だけバフが効く)
+  // colors は battle.css の .slime[data-type=id] と対応
+  SLIMES: {
+    green: {
+      name: 'みどりスライム',
+      desc: '基本のスライム',
+      cost: 0,                   // 初期所有
+      apply: () => {},
+    },
+    red: {
+      name: 'あかスライム',
+      desc: '攻撃力 +20%',
+      cost: 10000,
+      apply: (s) => { s.slimeAtkMul *= 1.2; },
+    },
+    blue: {
+      name: 'あおスライム',
+      desc: '攻撃速度 +15%',
+      cost: 15000,
+      apply: (s) => { s.slimeFireRateMul *= 0.87; },
+    },
+    gold: {
+      name: 'きんスライム',
+      desc: 'ゴールド +30%',
+      cost: 20000,
+      apply: (s) => { s.slimeGoldMul *= 1.3; },
+    },
+    purple: {
+      name: 'むらさきスライム',
+      desc: 'クリ確率 +10%',
+      cost: 25000,
+      apply: (s) => { s.slimeCritAdd += 0.1; },
+    },
+  },
+
   // ペット (常駐型バフ)
   // apply(s) で状態 s の petXxx フィールドを修正する。pet.js の recomputePetBuffs()
   // で初期値にリセットされてから所有してるペットの apply が順に呼ばれる。

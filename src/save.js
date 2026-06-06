@@ -13,6 +13,7 @@
 
 import { state } from './state.js';
 import { recomputePetBuffs } from './pet.js';
+import { recomputeSlimeBuffs } from './slime.js';
 
 const KEY = 'slime-clone-save';
 const VERSION = 1;
@@ -60,6 +61,13 @@ export function snapshot() {
     ownedPets[id] = !!(state.pets[id] && state.pets[id].owned);
   }
   data.pets = ownedPets;
+  // スライムは所有 bool マップ + 装備中 id を保存
+  const ownedSlimes = {};
+  for (const id in state.slimes) {
+    ownedSlimes[id] = !!(state.slimes[id] && state.slimes[id].owned);
+  }
+  data.slimes = ownedSlimes;
+  data.activeSlimeId = state.activeSlimeId;
   return data;
 }
 
@@ -84,6 +92,23 @@ export function restore(snap) {
     }
   }
   recomputePetBuffs();
+  // スライム所有状態を復元 → 装備中 id を反映 → buff 再計算
+  if (snap.slimes) {
+    for (const id in snap.slimes) {
+      if (!state.slimes[id]) state.slimes[id] = { owned: false };
+      state.slimes[id].owned = !!snap.slimes[id];
+    }
+  }
+  // みどりスライムだけは常時所有 (初期スライム)
+  if (!state.slimes.green) state.slimes.green = { owned: true };
+  state.slimes.green.owned = true;
+  // 装備中 id の整合性: 所有してないなら green にフォールバック
+  if (snap.activeSlimeId && state.slimes[snap.activeSlimeId]?.owned) {
+    state.activeSlimeId = snap.activeSlimeId;
+  } else {
+    state.activeSlimeId = 'green';
+  }
+  recomputeSlimeBuffs();
   // クリ確率だけ 1.0 で念のためクランプ (倍率は無制限)
   state.critChance = Math.min(1.0, state.critChance);
   if (snap.savedAt) _lastSavedAt = snap.savedAt;

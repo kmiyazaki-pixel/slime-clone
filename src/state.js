@@ -33,6 +33,15 @@ export const state = {
   petFireRateMul: 1,   // shotInterval に掛ける乗算 (小さいほど高速)
   petShotAdd: 0,       // shotCount に加算
 
+  // スライム: 所有マップ + 装備中の id + 装備スライムからのバフ
+  // (みどりスライムだけ最初から所有 + 装備済み)
+  slimes: { green: { owned: true } },
+  activeSlimeId: 'green',
+  slimeAtkMul: 1,      // attack 乗算
+  slimeFireRateMul: 1, // shotInterval 乗算
+  slimeGoldMul: 1,     // goldMultiplier 乗算
+  slimeCritAdd: 0,     // critChance 加算
+
   // ステージ進行
   world: 1,
   stage: 1,

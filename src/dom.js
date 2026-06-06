@@ -61,3 +61,9 @@ export const $petPanel           = document.getElementById('petPanel');
 export const $petGrid            = document.getElementById('petGrid');
 export const $petPanelGold       = document.getElementById('petPanelGold');
 export const $petPanelCount      = document.getElementById('petPanelCount');
+
+// スライムパネル (下部ナビ第1タブ)
+export const $slimePanel         = document.getElementById('slimePanel');
+export const $slimeGrid          = document.getElementById('slimeGrid');
+export const $slimePanelGold     = document.getElementById('slimePanelGold');
+export const $slimePanelCount    = document.getElementById('slimePanelCount');

@@ -918,9 +918,10 @@
 }
 
 /* ============================================================
-   6b. ペットパネル (下部ナビ第2タブ専用)
+   6b. ペットパネル / スライムパネル (下部ナビ第1/2タブ専用)
    ============================================================ */
-.pet-panel {
+.pet-panel,
+.slime-panel {
   background: linear-gradient(180deg, #6b4f37, #4a3526);
   border-top: 3px solid var(--frame);
   border-bottom: 3px solid var(--frame);
@@ -995,6 +996,14 @@
   border-color: #78350f;
   box-shadow: 0 3px 0 #78350f, inset 0 1px 0 rgba(255, 255, 255, 0.5),
               0 0 14px rgba(251, 191, 36, 0.4);
+}
+
+/* 装備中スライムカード: 青い発光で「これが今出てる」を強調 */
+.pet-card.equipped {
+  background: linear-gradient(180deg, #bfdbfe, #60a5fa);
+  border-color: #1e3a8a;
+  box-shadow: 0 3px 0 #1e3a8a, inset 0 1px 0 rgba(255, 255, 255, 0.5),
+              0 0 18px rgba(96, 165, 250, 0.7);
 }
 
 .pet-card-icon {

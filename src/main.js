@@ -88,8 +88,8 @@ function gameLoop(now) {
   updateEnemies(dt);
 
   // 自動射撃 (一定間隔で一番近い敵を撃つ。マルチショットなら扇状に)
-  // クイックペット所有時は petFireRateMul で interval が短縮される
-  const effectiveInterval = state.shotInterval * state.petFireRateMul;
+  // ペットとスライム両方の interval バフを反映
+  const effectiveInterval = state.shotInterval * state.petFireRateMul * state.slimeFireRateMul;
   if (now - state.lastShot > effectiveInterval) {
     const t = findNearestEnemy();
     if (t) {
