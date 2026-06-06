@@ -983,6 +983,49 @@
   border-radius: 3px;
 }
 
+/* スキルパネルは 5列 (1行5個、6個以上は下に折り返し) */
+#skillGrid {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+/* 5列だとカードが細いので中身をコンパクトに */
+#skillGrid .pet-card {
+  padding: 6px 3px;
+  gap: 2px;
+}
+#skillGrid .pet-card-icon {
+  font-size: 24px;
+}
+#skillGrid .pet-card-name {
+  font-size: 9px;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-align: center;
+}
+#skillGrid .pet-card-desc {
+  font-size: 8px;
+  line-height: 1.15;
+}
+#skillGrid .skill-card-cd {
+  font-size: 8px;
+  padding: 1px 4px;
+}
+#skillGrid .pet-card-buy {
+  padding: 3px 2px;
+}
+#skillGrid .pet-card-buy-label {
+  font-size: 10px;
+}
+#skillGrid .pet-card-buy-cost {
+  font-size: 8px;
+  padding: 1px 3px;
+}
+#skillGrid .pet-card-owned-label {
+  font-size: 9px;
+  padding: 2px 5px;
+}
+
 .pet-card {
   position: relative;
   background: linear-gradient(180deg, #cbd5e1, #94a3b8);
