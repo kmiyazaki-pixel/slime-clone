@@ -976,6 +976,10 @@
   overflow-y: auto;
   min-height: 0;
   padding-right: 2px;
+  /* カードを上詰め + 各カードを中身ぶんの高さに (行ストレッチ防止)。
+     これがないと 1行しかない時にカードがパネル全高に引き伸ばされる */
+  align-content: start;
+  align-items: start;
 }
 
 .pet-grid::-webkit-scrollbar { width: 5px; }
