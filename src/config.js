@@ -116,5 +116,32 @@ export const CONFIG = {
       fireInterval: 1500,
       damageRatio: 0.25,
     },
+    quick: {
+      name: 'クイック',
+      icon: '🐿️',
+      cost: 10000,
+      desc: '攻撃速度 +25%',
+      apply: (s) => { s.petFireRateMul *= 0.8; }, // interval を 0.8倍 = 25% 高速化
+      fireInterval: 1200,
+      damageRatio: 0.3,
+    },
+    multi: {
+      name: 'マルチ',
+      icon: '🐑',
+      cost: 15000,
+      desc: '発射数 +1',
+      apply: (s) => { s.petShotAdd += 1; },
+      fireInterval: 1500,
+      damageRatio: 0.3,
+    },
+    boost: {
+      name: 'ブースト',
+      icon: '🐼',
+      cost: 12000,
+      desc: '攻撃力 +25%',
+      apply: (s) => { s.petAtkMul *= 1.25; },
+      fireInterval: 1300,
+      damageRatio: 0.3,
+    },
   },
 };

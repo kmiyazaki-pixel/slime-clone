@@ -19,6 +19,8 @@ export function recomputePetBuffs() {
   state.petGoldMul = 1;
   state.petCritAdd = 0;
   state.petPierceAdd = 0;
+  state.petFireRateMul = 1;
+  state.petShotAdd = 0;
   for (const id in state.pets) {
     if (state.pets[id] && state.pets[id].owned && CONFIG.PETS[id]) {
       CONFIG.PETS[id].apply(state);

@@ -14,12 +14,16 @@ import { enemyHpAt, enemyRewardAt } from './stage.js';
 
 // 現在の構成での DPS (1秒あたりの総ダメージ)
 function dpsEstimate() {
-  const shotsPerSec = 1000 / state.shotInterval;
-  // クリ込みの期待ダメージ倍率 (ペットの critAdd も含める)
+  // クイックペットを反映した実効 interval
+  const effectiveInterval = state.shotInterval * state.petFireRateMul;
+  const shotsPerSec = 1000 / effectiveInterval;
+  // クリ込みの期待ダメージ倍率 (確率はペット込み、倍率は 2.0 で頭打ち)
   const critRate = Math.min(1, state.critChance + state.petCritAdd);
-  const critBonus = 1 + critRate * (state.critMultiplier - 1);
-  // ペットの攻撃乗算込み、shotCount 発で扇撃
-  return shotsPerSec * (state.attack * state.petAtkMul) * critBonus * state.shotCount;
+  const critMul = Math.min(2.0, state.critMultiplier);
+  const critBonus = 1 + critRate * (critMul - 1);
+  // ペットの攻撃乗算と発射数追加を含める
+  const shotCount = state.shotCount + state.petShotAdd;
+  return shotsPerSec * (state.attack * state.petAtkMul) * critBonus * shotCount;
 }
 
 // 1秒あたりに倒せる雑魚の数

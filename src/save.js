@@ -84,6 +84,9 @@ export function restore(snap) {
     }
   }
   recomputePetBuffs();
+  // クリ系の cap を念のため適用 (旧仕様で 2.0 超えてた状態の救済)
+  state.critMultiplier = Math.min(2.0, state.critMultiplier);
+  state.critChance = Math.min(1.0, state.critChance);
   if (snap.savedAt) _lastSavedAt = snap.savedAt;
   return true;
 }

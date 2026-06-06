@@ -103,15 +103,27 @@ function getStatName(key) {
   return '';
 }
 
+// 強化が cap (上限) に達してるか
+function isUpgradeMaxed(key) {
+  if (key === 'critRate') return state.critChance >= 1.0;
+  if (key === 'critDmg')  return state.critMultiplier >= 2.0;
+  return false;
+}
+
 // 強化パネル全体を再描画
 export function renderUpgrades() {
   $upgrades.innerHTML = '';
   for (const [key, u] of Object.entries(state.upgrades)) {
     const cost = upgradeCost(u);
     const canAfford = state.gold >= cost;
+    const maxed = isUpgradeMaxed(key);
 
     const row = document.createElement('div');
-    row.className = `upgrade-row up-${key}`;
+    row.className = `upgrade-row up-${key}` + (maxed ? ' maxed' : '');
+    const btnInner = maxed
+      ? `<div class="upg-btn-label">MAX</div>`
+      : `<div class="upg-btn-label">強化</div>
+         <div class="upg-cost"><span class="upg-cost-icon"></span>${formatNum(cost)}</div>`;
     row.innerHTML = `
       <div class="upg-icon-wrap">
         <div class="upg-icon">${u.icon}</div>
@@ -122,11 +134,8 @@ export function renderUpgrades() {
         <div class="upg-value">${getStatLabel(key)}</div>
         <div class="upg-substat">${getStatName(key)}</div>
       </div>
-      <button class="upg-btn" ${canAfford ? '' : 'disabled'} data-key="${key}">
-        <div class="upg-btn-label">強化</div>
-        <div class="upg-cost">
-          <span class="upg-cost-icon"></span>${formatNum(cost)}
-        </div>
+      <button class="upg-btn" ${(maxed || !canAfford) ? 'disabled' : ''} data-key="${key}">
+        ${btnInner}
       </button>
     `;
     $upgrades.appendChild(row);
@@ -154,8 +163,9 @@ function buyUpgrade(key) {
 // ボタンの有効/無効だけを軽く更新 (毎フレーム再描画は重いので)
 export function refreshUpgradeButtons() {
   $upgrades.querySelectorAll('button[data-key]').forEach(btn => {
-    const u = state.upgrades[btn.dataset.key];
-    btn.disabled = state.gold < upgradeCost(u);
+    const key = btn.dataset.key;
+    const u = state.upgrades[key];
+    btn.disabled = isUpgradeMaxed(key) || state.gold < upgradeCost(u);
   });
 }
 
@@ -479,17 +489,20 @@ function handleBuyPet(petId) {
 }
 
 // 戦場に所有ペットのスプライトを並べる (購入時 + ロード時に呼ぶ)
+// 4個ずつ折り返して上に段を増やす (種類が増えても重ならない)
 export function renderPetSprites() {
   $battlefield.querySelectorAll('.pet-sprite').forEach(el => el.remove());
   const owned = getOwnedPetIds();
+  const COLS = 4;
   owned.forEach((id, i) => {
     const def = CONFIG.PETS[id];
     if (!def) return;
+    const col = i % COLS;
+    const row = Math.floor(i / COLS);
     const el = document.createElement('div');
     el.className = `pet-sprite pet-${id}`;
-    // スライムは left:60 / bottom:28%、ペットは左に並べる
-    el.style.left = (8 + i * 22) + 'px';
-    el.style.bottom = (24 + (i % 2) * 4) + '%';
+    el.style.left = (8 + col * 22) + 'px';
+    el.style.bottom = (22 + row * 11 + (col % 2) * 3) + '%';
     el.textContent = def.icon;
     $battlefield.appendChild(el);
   });

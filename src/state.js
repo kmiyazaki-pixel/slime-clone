@@ -30,6 +30,8 @@ export const state = {
   petGoldMul: 1,       // goldMultiplier に掛ける乗算
   petCritAdd: 0,       // critChance に加算
   petPierceAdd: 0,     // pierceCount に加算
+  petFireRateMul: 1,   // shotInterval に掛ける乗算 (小さいほど高速)
+  petShotAdd: 0,       // shotCount に加算
 
   // ステージ進行
   world: 1,
@@ -116,7 +118,8 @@ export const state = {
       baseCost: 120,
       costMul: 1.25,
       apply: (s) => {
-        s.critMultiplier += 0.2;
+        // 上限 2.0x (= +100% ダメージ) を超えないようにする
+        s.critMultiplier = Math.min(2.0, s.critMultiplier + 0.2);
       },
     },
     goldBoost: {
