@@ -525,8 +525,9 @@
   border-bottom: 3px solid var(--frame);
   padding: 6px 10px 6px;
   flex: 0 0 auto;
-  max-height: 42vh;
-  min-height: 180px;
+  /* 全パネル共通の固定高さ。タブ切替で戦場の高さが変わらないように
+     min/max ではなく height で固定する (中身が少なくても余白で埋める) */
+  height: 42vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -933,8 +934,8 @@
   border-bottom: 3px solid var(--frame);
   padding: 6px 10px 6px;
   flex: 0 0 auto;
-  max-height: 42vh;
-  min-height: 180px;
+  /* .upgrade-panel と同じ固定高さ。全タブで戦場の高さを一定に保つ */
+  height: 42vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
