@@ -5,8 +5,8 @@
 export const CONFIG = {
   // 敵
   ENEMY: {
-    BASE_HP: 5,           // ステージ 1-1 の HP
-    HP_GROWTH: 1.20,      // ステージごとの HP 倍率
+    BASE_HP: 2,           // ステージ 1-1 の HP (was 5)
+    HP_GROWTH: 1.15,      // ステージごとの HP 倍率 (was 1.20、もっと緩やかに)
     SPEED_MIN: 25,        // px/sec
     SPEED_RANGE: 12,      // ランダム加算分
     REWARD: 2,            // ステージ 1-1 のゴールド報酬
@@ -33,7 +33,7 @@ export const CONFIG = {
 
   // ボス
   BOSS: {
-    HP_MULTIPLIER: 8,        // 通常敵の何倍のHP
+    HP_MULTIPLIER: 18,       // 通常敵の何倍のHP (was 8、雑魚弱体化の補正)
     REWARD_MULTIPLIER: 30,   // 通常敵の何倍の報酬
     TIMER_SECONDS: 30,
     SIZE: 80,                // px (通常敵は 36px)
