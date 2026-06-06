@@ -116,6 +116,35 @@ function isUpgradeMaxed(key) {
   return false;
 }
 
+// =====================================================
+//  強化の長押し連射: タップで1回、400ms 押し続けたら 80ms 間隔で連発
+// =====================================================
+let _holdTimer = null;
+let _holdInterval = null;
+
+function startUpgradeHold(key) {
+  stopUpgradeHold();
+  buyUpgrade(key);  // 即時 1回
+
+  // 400ms 後に連射開始
+  _holdTimer = setTimeout(() => {
+    _holdInterval = setInterval(() => {
+      const u = state.upgrades[key];
+      if (!u) { stopUpgradeHold(); return; }
+      if (isUpgradeMaxed(key)) { stopUpgradeHold(); return; }
+      if (state.gold < upgradeCost(u)) { stopUpgradeHold(); return; }
+      buyUpgrade(key);
+    }, 80);
+  }, 400);
+}
+
+function stopUpgradeHold() {
+  clearTimeout(_holdTimer);
+  clearInterval(_holdInterval);
+  _holdTimer = null;
+  _holdInterval = null;
+}
+
 // 強化パネル全体を再描画
 export function renderUpgrades() {
   $upgrades.innerHTML = '';
@@ -147,10 +176,7 @@ export function renderUpgrades() {
     $upgrades.appendChild(row);
   }
 
-  // ボタンにクリックイベントを再バインド
-  $upgrades.querySelectorAll('button[data-key]').forEach(btn => {
-    btn.addEventListener('click', () => buyUpgrade(btn.dataset.key));
-  });
+  // クリック/長押しのリスナは setupUI でデリゲートしてるので、ここでは付けない
 }
 
 // 強化を購入
@@ -294,6 +320,16 @@ export function setupUI() {
       }
     });
   });
+
+  // 強化ボタンの長押し連射: パネルにデリゲート + 文書全体で離した時に停止
+  $upgrades.addEventListener('pointerdown', (e) => {
+    const btn = e.target.closest('button[data-key]');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    startUpgradeHold(btn.dataset.key);
+  });
+  document.addEventListener('pointerup', stopUpgradeHold);
+  document.addEventListener('pointercancel', stopUpgradeHold);
 
   // ⚙ ボタンでクラウドセーブ/ログインのモーダルを開く
   $settingsBtn.addEventListener('click', openAuthModal);
