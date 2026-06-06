@@ -153,7 +153,8 @@ export function killEnemy(e) {
   e.alive = false;
   e.el.classList.add('dying');
 
-  const m = state.goldMultiplier;
+  // ペットのゴールドバフ (コインドロップ所有時 ×1.5 など) を反映
+  const m = state.goldMultiplier * state.petGoldMul;
   spawnGoldDrop(e.x + 10, e.y + 10, Math.floor(e.reward * m));
 
   // ボスは派手に: 複数のゴールド粒子を散らす

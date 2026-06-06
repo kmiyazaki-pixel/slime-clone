@@ -24,6 +24,13 @@ export const state = {
   goldMultiplier: 1.0, // ゴールド報酬の倍率
   pierceCount: 0,      // 弾が貫通できる追加敵数 (0=単発)
 
+  // Phase 4 ペット: 所有マップと、所有から計算されるバフ
+  pets: {},            // { petId: { owned: bool } }
+  petAtkMul: 1,        // attack に掛ける乗算 (recompute で 1 にリセット)
+  petGoldMul: 1,       // goldMultiplier に掛ける乗算
+  petCritAdd: 0,       // critChance に加算
+  petPierceAdd: 0,     // pierceCount に加算
+
   // ステージ進行
   world: 1,
   stage: 1,

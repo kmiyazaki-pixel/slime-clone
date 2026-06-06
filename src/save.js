@@ -12,6 +12,7 @@
 //  save.js は cloud.js を直接 import しないので、Supabase なしでも動く。
 
 import { state } from './state.js';
+import { recomputePetBuffs } from './pet.js';
 
 const KEY = 'slime-clone-save';
 const VERSION = 1;
@@ -53,6 +54,12 @@ export function snapshot() {
     levels[key] = state.upgrades[key].level;
   }
   data.upgradeLevels = levels;
+  // ペットは所有 bool だけ保存。petXxxMul/Add は recompute で復元する
+  const ownedPets = {};
+  for (const id in state.pets) {
+    ownedPets[id] = !!(state.pets[id] && state.pets[id].owned);
+  }
+  data.pets = ownedPets;
   return data;
 }
 
@@ -69,6 +76,14 @@ export function restore(snap) {
       }
     }
   }
+  // ペット所有を復元してから buff を再計算
+  if (snap.pets) {
+    for (const id in snap.pets) {
+      if (!state.pets[id]) state.pets[id] = { owned: false };
+      state.pets[id].owned = !!snap.pets[id];
+    }
+  }
+  recomputePetBuffs();
   if (snap.savedAt) _lastSavedAt = snap.savedAt;
   return true;
 }

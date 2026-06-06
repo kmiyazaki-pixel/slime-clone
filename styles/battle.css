@@ -152,6 +152,39 @@
   --rock: #1c1917;
 }
 
+/* ========= ペットスプライト (スライムの周りに並ぶ) ========= */
+.pet-sprite {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  z-index: 4;                       /* スライム(5) より下に潜る */
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.5));
+  animation: petBounce 0.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pet-sprite:nth-child(odd)  { animation-delay: -0.4s; }
+.pet-sprite:nth-child(even) { animation-delay: -0.2s; }
+
+@keyframes petBounce {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50%      { transform: translateY(-4px) scaleX(0.95); }
+}
+
+/* travel 中はペットも一緒に走る (前傾) */
+.battlefield.traveling .pet-sprite {
+  animation: petRun 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes petRun {
+  0%   { transform: translateY(0) skewX(-4deg); }
+  100% { transform: translateY(-3px) skewX(2deg); }
+}
+
 /* ========= 移動モード (次の敵集団に向かって走る) ========= */
 /* スクロールを大幅に速める + スライムを前傾でランニング感 */
 .battlefield.traveling .scroll-far { animation-duration: 5s; }

@@ -46,7 +46,7 @@
   - [x] セーブ機能 (localStorage)
   - [x] クラウド同期 (Supabase + Magic Link 認証) → 別端末でログインで進捗共有
   - [x] 放置報酬 (上限8h、効率50%、起動時にポップアップで一括受け取り)
-  - [ ] ペット
+  - [x] ペット (4種、所有=永続バフ、下部ナビから購入、スプライト常時表示)
   - [ ] 召喚
 
 ## ファイル構成
@@ -71,6 +71,7 @@
     ├── save.js         localStorage への保存・復元 (Phase 4)
     ├── cloud.js        Supabase 同期と Magic Link 認証 (Phase 4)
     ├── idle.js         放置報酬の計算 (Phase 4)
+    ├── pet.js          ペットの所有管理とバフ再計算 (Phase 4)
     └── ui.js           UI描画
 ```
 

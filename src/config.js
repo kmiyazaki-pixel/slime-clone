@@ -75,4 +75,38 @@ export const CONFIG = {
 
   // スライムの移動 (敵集団に向かって走るモード)
   TRAVEL_DURATION: 1.5,          // ステージ間で travel モードに入っている秒数
+
+  // ペット (常駐型バフ)
+  // apply(s) で状態 s の petXxx フィールドを修正する。pet.js の recomputePetBuffs()
+  // で初期値にリセットされてから所有してるペットの apply が順に呼ばれる。
+  PETS: {
+    attacker: {
+      name: 'アタッカー',
+      icon: '🐯',
+      cost: 5000,
+      desc: '攻撃力 +50%',
+      apply: (s) => { s.petAtkMul *= 1.5; },
+    },
+    coinDrop: {
+      name: 'コインドロップ',
+      icon: '🐹',
+      cost: 4000,
+      desc: 'ゴールド +50%',
+      apply: (s) => { s.petGoldMul *= 1.5; },
+    },
+    lucky: {
+      name: 'ラッキー',
+      icon: '🐰',
+      cost: 6000,
+      desc: 'クリ確率 +20%',
+      apply: (s) => { s.petCritAdd += 0.2; },
+    },
+    sharp: {
+      name: 'シャープ',
+      icon: '🐺',
+      cost: 8000,
+      desc: '貫通 +2',
+      apply: (s) => { s.petPierceAdd += 2; },
+    },
+  },
 };

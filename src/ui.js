@@ -41,10 +41,16 @@ import {
   $idleModalCapMsg,
   $idleModalGold,
   $idleModalClaimBtn,
+  $petModal,
+  $petModalBg,
+  $petGrid,
+  $petModalCloseBtn,
+  $petNavBtn,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
 import { saveGame } from './save.js';
+import { buyPet, getOwnedPetIds } from './pet.js';
 
 // ゴールド表示を最新値に更新 (上部バーと強化パネル上の両方)
 export function updateGoldDisplay() {
@@ -247,13 +253,18 @@ export function setupUI() {
     retryBoss();
   });
 
-  // 下部ナビは見た目だけ (タップでアクティブ切替)
+  // 下部ナビ: アクティブ切替 + 「ペット」はモーダルを開く
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      if (btn.dataset.tab === 'pet') openPetModal();
     });
   });
+
+  // ペットモーダル: 閉じる/背景タップ
+  $petModalBg.addEventListener('click', closePetModal);
+  $petModalCloseBtn.addEventListener('click', closePetModal);
 
   // ⚙ ボタンでクラウドセーブ/ログインのモーダルを開く
   $settingsBtn.addEventListener('click', openAuthModal);
@@ -279,6 +290,7 @@ export function renderAll() {
   updateStageDisplay();
   updateAutoButton();
   renderUpgrades();
+  renderPetSprites();
 }
 
 // =====================================================
@@ -397,4 +409,78 @@ export function showIdleReward(reward) {
   $idleModalBg.onclick = () => {
     $idleModalClaimBtn.onclick();
   };
+}
+
+// =====================================================
+//  ペット (モーダル + スプライト)
+// =====================================================
+
+function openPetModal() {
+  $petModal.hidden = false;
+  renderPetGrid();
+}
+
+function closePetModal() {
+  $petModal.hidden = true;
+}
+
+// 全体描画 (購入・state 変化のたびに呼ぶ)
+function renderPetGrid() {
+  $petGrid.innerHTML = '';
+  for (const [id, def] of Object.entries(CONFIG.PETS)) {
+    const owned = !!(state.pets[id] && state.pets[id].owned);
+    const canAfford = state.gold >= def.cost;
+    const card = document.createElement('div');
+    card.className = 'pet-card' + (owned ? ' owned' : '');
+    if (owned) {
+      card.innerHTML = `
+        <div class="pet-card-icon">${def.icon}</div>
+        <div class="pet-card-name">${def.name}</div>
+        <div class="pet-card-desc">${def.desc}</div>
+        <div class="pet-card-owned-label">所持</div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="pet-card-icon">${def.icon}</div>
+        <div class="pet-card-name">${def.name}</div>
+        <div class="pet-card-desc">${def.desc}</div>
+        <button class="pet-card-buy" data-pet-id="${id}" ${canAfford ? '' : 'disabled'}>
+          <span class="coin-icon-mini"></span>${formatNum(def.cost)}
+        </button>
+      `;
+    }
+    $petGrid.appendChild(card);
+  }
+  // 購入ボタンを wiring
+  $petGrid.querySelectorAll('.pet-card-buy').forEach(btn => {
+    btn.addEventListener('click', () => handleBuyPet(btn.dataset.petId));
+  });
+}
+
+function handleBuyPet(petId) {
+  const ok = buyPet(petId);
+  if (!ok) return;
+  updateGoldDisplay();
+  renderPetGrid();
+  renderPetSprites();
+  // 強化パネルの表示値 (クリ確率など) もペット買うと変わる
+  renderUpgrades();
+  saveGame();
+}
+
+// 戦場に所有ペットのスプライトを並べる (購入時 + ロード時に呼ぶ)
+export function renderPetSprites() {
+  $battlefield.querySelectorAll('.pet-sprite').forEach(el => el.remove());
+  const owned = getOwnedPetIds();
+  owned.forEach((id, i) => {
+    const def = CONFIG.PETS[id];
+    if (!def) return;
+    const el = document.createElement('div');
+    el.className = `pet-sprite pet-${id}`;
+    // スライムは left:60 / bottom:28%、ペットは左に並べる
+    el.style.left = (8 + i * 22) + 'px';
+    el.style.bottom = (24 + (i % 2) * 4) + '%';
+    el.textContent = def.icon;
+    $battlefield.appendChild(el);
+  });
 }

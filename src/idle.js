@@ -15,10 +15,11 @@ import { enemyHpAt, enemyRewardAt } from './stage.js';
 // 現在の構成での DPS (1秒あたりの総ダメージ)
 function dpsEstimate() {
   const shotsPerSec = 1000 / state.shotInterval;
-  // クリ込みの期待ダメージ倍率
-  const critBonus = 1 + state.critChance * (state.critMultiplier - 1);
-  // 1発あたり damage、shotCount 発で扇撃
-  return shotsPerSec * state.attack * critBonus * state.shotCount;
+  // クリ込みの期待ダメージ倍率 (ペットの critAdd も含める)
+  const critRate = Math.min(1, state.critChance + state.petCritAdd);
+  const critBonus = 1 + critRate * (state.critMultiplier - 1);
+  // ペットの攻撃乗算込み、shotCount 発で扇撃
+  return shotsPerSec * (state.attack * state.petAtkMul) * critBonus * state.shotCount;
 }
 
 // 1秒あたりに倒せる雑魚の数
@@ -37,7 +38,8 @@ function goldPerSecond() {
   const w = state.world;
   const s = Math.min(state.stage, 9);
   const kps = killsPerSecond(w, s);
-  const goldPerKill = enemyRewardAt(w, s) * state.goldMultiplier;
+  // ペットのゴールド乗算も含める
+  const goldPerKill = enemyRewardAt(w, s) * state.goldMultiplier * state.petGoldMul;
   return kps * goldPerKill;
 }
 

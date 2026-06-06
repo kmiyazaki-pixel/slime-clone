@@ -26,6 +26,7 @@ import {
   bindCloud as bindCloudUI,
   refreshAuthUI,
   showIdleReward,
+  renderPetSprites,
 } from './ui.js';
 
 // プレイヤーの位置を戦場の高さに合わせて設定
@@ -124,6 +125,7 @@ function init() {
   updateStageDisplay();
   updateAutoButton();
   renderUpgrades();
+  renderPetSprites();   // 所有ペットのスプライトを戦場に並べる
   setupUI();
 
   // ボス戦中にセーブされた = state.stage === 10 なら復帰時にボス戦を再開

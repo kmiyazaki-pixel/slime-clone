@@ -54,3 +54,10 @@ export const $idleModalElapsed   = document.getElementById('idleModalElapsed');
 export const $idleModalCapMsg    = document.getElementById('idleModalCapMsg');
 export const $idleModalGold      = document.getElementById('idleModalGold');
 export const $idleModalClaimBtn  = document.getElementById('idleModalClaimBtn');
+
+// ペットモーダル
+export const $petModal           = document.getElementById('petModal');
+export const $petModalBg         = document.getElementById('petModalBg');
+export const $petGrid            = document.getElementById('petGrid');
+export const $petModalCloseBtn   = document.getElementById('petModalCloseBtn');
+export const $petNavBtn          = document.querySelector('.bottom-nav .nav-btn[data-tab="pet"]');
