@@ -488,16 +488,17 @@ function renderPetGrid() {
         <div class="pet-card-name">${def.name}</div>
         <div class="pet-card-desc">${def.desc}</div>
         <button class="pet-card-buy" data-pet-id="${id}" ${canAfford ? '' : 'disabled'}>
-          <span class="coin-icon-mini"></span>${formatNum(def.cost)}
+          <div class="pet-card-buy-label">購入</div>
+          <div class="pet-card-buy-cost"><span class="coin-icon-mini"></span>${formatNum(def.cost)}</div>
         </button>
       `;
+      // カード全体タップで購入可能
+      card.addEventListener('click', () => {
+        if (state.gold >= def.cost && !state.pets[id]?.owned) handleBuyPet(id);
+      });
     }
     $petGrid.appendChild(card);
   }
-  // 購入ボタンを wiring
-  $petGrid.querySelectorAll('.pet-card-buy').forEach(btn => {
-    btn.addEventListener('click', () => handleBuyPet(btn.dataset.petId));
-  });
 }
 
 function handleBuyPet(petId) {
@@ -540,10 +541,13 @@ function renderSlimeGrid() {
     if (active) {
       actionHtml = `<div class="pet-card-owned-label">装備中</div>`;
     } else if (owned) {
-      actionHtml = `<button class="pet-card-buy" data-action="equip" data-slime-id="${id}">装備</button>`;
+      actionHtml = `<button class="pet-card-buy" data-action="equip" data-slime-id="${id}">
+        <div class="pet-card-buy-label">装備</div>
+      </button>`;
     } else {
       actionHtml = `<button class="pet-card-buy" data-action="buy" data-slime-id="${id}" ${canAfford ? '' : 'disabled'}>
-        <span class="coin-icon-mini"></span>${formatNum(def.cost)}
+        <div class="pet-card-buy-label">購入</div>
+        <div class="pet-card-buy-cost"><span class="coin-icon-mini"></span>${formatNum(def.cost)}</div>
       </button>`;
     }
 
@@ -555,17 +559,16 @@ function renderSlimeGrid() {
       <div class="pet-card-desc">${def.desc}</div>
       ${actionHtml}
     `;
+
+    // カード全体をタップしても買える/装備できるように
+    card.addEventListener('click', () => {
+      if (state.activeSlimeId === id) return;
+      if (state.slimes[id]?.owned) handleEquipSlime(id);
+      else if (state.gold >= def.cost) handleBuySlime(id);
+    });
+
     $slimeGrid.appendChild(card);
   }
-
-  $slimeGrid.querySelectorAll('button[data-slime-id]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.slimeId;
-      const action = btn.dataset.action;
-      if (action === 'buy') handleBuySlime(id);
-      else if (action === 'equip') handleEquipSlime(id);
-    });
-  });
 }
 
 function handleBuySlime(slimeId) {

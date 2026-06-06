@@ -28,6 +28,7 @@ import {
   refreshAuthUI,
   showIdleReward,
   renderPetSprites,
+  updateSlimeVisual,
 } from './ui.js';
 
 // プレイヤーの位置を戦場の高さに合わせて設定
@@ -148,6 +149,7 @@ function init() {
   updateAutoButton();
   renderUpgrades();
   renderPetSprites();   // 所有ペットのスプライトを戦場に並べる
+  updateSlimeVisual();  // 装備中スライムの色を戦場に反映
   setupUI();
 
   // ボス戦中にセーブされた = state.stage === 10 なら復帰時にボス戦を再開
