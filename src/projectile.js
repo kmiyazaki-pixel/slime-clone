@@ -1,41 +1,46 @@
 // =====================================================
-//  弾 - 発射、移動、衝突判定 (マルチショット/クリ/貫通対応)
+//  弾 - 発射、移動、衝突判定 (ダブルショット/クリ/貫通対応)
 // =====================================================
+// 旧マルチショット (扇形複数発射) は廃止。今は 1発撃って、確率で
+// state.doubleShotChance + state.petDoubleShotAdd の合算分だけ
+// CONFIG.DOUBLE_SHOT.DELAY_MS 後にもう一発撃つ仕様。
 
 import { state } from './state.js';
 import { CONFIG } from './config.js';
 import { $battlefield } from './dom.js';
 import { showDamage } from './effects.js';
-import { killEnemy } from './enemy.js';
+import { killEnemy, findNearestEnemy } from './enemy.js';
+
+// ターゲットへ角度を計算する小ヘルパ
+function aimAngle(target) {
+  const half = target.size / 2;
+  const dx = (target.x + half) - state.player.x;
+  const dy = (target.y + half) - state.player.y;
+  return Math.atan2(dy, dx);
+}
 
 // ターゲットに向けて弾を発射する公開API
-// state.shotCount に応じて扇形に複数発射
-// 発射点はスライムの中心 (= state.player.x/y は setPlayerY で
-// スライム DOM の中心に合わせてある)
+//   - まず 1発撃つ
+//   - state.doubleShotChance + state.petDoubleShotAdd の確率で
+//     DELAY_MS 後にもう 1発 (ダブルショット)
+//   - 2発目の時点でターゲットが死んでたら、最寄りの敵に当てる
 export function fireAt(target) {
-  const sx = state.player.x;
-  const sy = state.player.y;
-  const half = target.size / 2;
-  const tcx = target.x + half;
-  const tcy = target.y + half;
-  const centerAngle = Math.atan2(tcy - sy, tcx - sx);
+  spawnSingleProjectile(target, aimAngle(target));
 
-  // マルチペット所有時は同時発射数が増える
-  const count = state.shotCount + state.petShotAdd;
-  const spread = CONFIG.MULTI_SHOT.SPREAD_DEG * Math.PI / 180;
+  const chance = Math.min(1, state.doubleShotChance + state.petDoubleShotAdd);
+  if (Math.random() >= chance) return;
 
-  for (let i = 0; i < count; i++) {
-    let offset = 0;
-    if (count > 1) {
-      // i=0 が一番上、i=count-1 が一番下になるよう -spread/2 ~ +spread/2 に等間隔
-      offset = -spread / 2 + (i / (count - 1)) * spread;
-    }
-    spawnSingleProjectile(target, centerAngle + offset);
-  }
+  // 2発目を予約
+  const targetId = target.id;
+  setTimeout(() => {
+    let t = state.enemies.find(e => e.id === targetId && e.alive);
+    if (!t) t = findNearestEnemy();
+    if (t) spawnSingleProjectile(t, aimAngle(t));
+  }, CONFIG.DOUBLE_SHOT.DELAY_MS);
 }
 
 // ペットの自前攻撃。ペットスプライトの位置から、シンプルな単発弾を撃つ
-// (クリ/貫通/マルチショットは適用しない。state.attack * damageRatio のみ)
+// (クリ/貫通/ダブルショットは適用しない。state.attack * damageRatio のみ)
 export function firePetAt(target, petIndex, damage) {
   // 実 DOM からペットの中心位置を取る (renderPetSprites の式に依存しない)
   const sprites = $battlefield.querySelectorAll('.pet-sprite');

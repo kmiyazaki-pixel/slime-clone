@@ -39,7 +39,7 @@
 - [x] **Phase 1**: コアループ (自動射撃、敵スポーン、ゴールド、攻撃強化)
 - [x] **Phase 2-A**: ステージ進行、難易度スケーリング、AUTO切替
 - [x] **Phase 2-B**: ボス戦 (Stage 10 で出現、30秒制限、再挑戦ボタン)
-- [x] **Phase 3**: マルチショット/クリ率/クリ倍率/ゴールドUP/貫通弾 の5強化追加
+- [x] **Phase 3**: ダブルショット(旧マルチショット)/クリ率/クリ倍率/ゴールドUP/貫通弾 の5強化追加
 - [x] **UI 刷新**: スライム伝説風レイアウト (上部バー/戦場オーバーレイ/円形アクション/下部ナビ)
 - [x] **背景演出**: 2層スクロール + 4ワールドのテーマ切替 + 敵の通り抜け阻止
 - [ ] **Phase 4**: 召喚、ペット、放置報酬、セーブ機能
@@ -93,11 +93,17 @@
 - 主な関数: `startBossFight`/`endBossFight`/`retryBoss` (stage.js)、`spawnBoss` (enemy.js)
 
 ### Phase 3 強化項目
-追加された5項目: マルチショット (Lv4ごとに+1発, 扇形)、クリ率 (+2%/Lv)、
-クリ倍率 (+0.2x/Lv, 初期2.0x)、ゴールドUP (+5%/Lv)、貫通弾 (Lv5ごとに+1)。
-- 関連 config: `CONFIG.MULTI_SHOT`/`CRIT`/`GOLD_BOOST`/`PIERCE`
-- 関連 state: `shotCount`/`critChance`/`critMultiplier`/`goldMultiplier`/`pierceCount`
-- 発射の公開API: `fireAt(target)` (projectile.js)
+追加された5項目 (一部後で仕様変更あり):
+- **ダブルショット** (旧マルチショット): Lv N で N% の確率で 120ms 後に 2発目を撃つ。Lv 100 で 100% MAX
+- クリ率 (+2%/Lv、Lv 50 で 100% MAX)
+- クリ倍率 (+0.2x/Lv, 初期2.0x、上限なし)
+- ゴールドUP (+5%/Lv)
+- 貫通弾 (Lv5ごとに+1)
+
+- 関連 config: `CONFIG.DOUBLE_SHOT`/`CRIT`/`GOLD_BOOST`/`PIERCE`
+- 関連 state: `doubleShotChance`/`critChance`/`critMultiplier`/`goldMultiplier`/`pierceCount`
+  - legacy: `shotCount`/`petShotAdd` は state に残っているが新仕様では未使用
+- 発射の公開API: `fireAt(target)` (projectile.js)。1発+確率で2発目を setTimeout で予約
 
 ## 次にやること: Phase 4 (召喚 / ペット / 放置報酬 / セーブ)
 

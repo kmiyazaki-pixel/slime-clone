@@ -20,10 +20,11 @@ function dpsEstimate() {
   // クリ込みの期待ダメージ倍率 (確率はペット + スライム加算)
   const critRate = Math.min(1, state.critChance + state.petCritAdd + state.slimeCritAdd);
   const critBonus = 1 + critRate * (state.critMultiplier - 1);
-  // ペット + スライムの攻撃乗算と発射数追加を含める
-  const shotCount = state.shotCount + state.petShotAdd;
+  // ダブルショットの期待発射数: 1 + 確率 (確率は最大 1.0 で頭打ち)
+  const doubleP = Math.min(1, state.doubleShotChance + state.petDoubleShotAdd);
+  const expectedShots = 1 + doubleP;
   const atk = state.attack * state.petAtkMul * state.slimeAtkMul;
-  return shotsPerSec * atk * critBonus * shotCount;
+  return shotsPerSec * atk * critBonus * expectedShots;
 }
 
 // 1秒あたりに倒せる雑魚の数

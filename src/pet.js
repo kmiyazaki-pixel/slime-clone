@@ -20,7 +20,8 @@ export function recomputePetBuffs() {
   state.petCritAdd = 0;
   state.petPierceAdd = 0;
   state.petFireRateMul = 1;
-  state.petShotAdd = 0;
+  state.petShotAdd = 0;         // legacy: 旧マルチショット
+  state.petDoubleShotAdd = 0;   // ダブルペット所有時に +0.25
   for (const id in state.pets) {
     if (state.pets[id] && state.pets[id].owned && CONFIG.PETS[id]) {
       CONFIG.PETS[id].apply(state);

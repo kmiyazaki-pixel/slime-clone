@@ -31,6 +31,7 @@ const SCALAR_KEYS = [
   'critMultiplier',
   'goldMultiplier',
   'pierceCount',
+  'doubleShotChance',
   'world',
   'stage',
   'killsInStage',
@@ -92,6 +93,13 @@ export function restore(snap) {
     }
   }
   recomputePetBuffs();
+  // 旧マルチショット (shotCount-based) → 新ダブルショット (chance-based) のマイグレーション
+  // 旧セーブには doubleShotChance フィールドが無いので、multiShot.level から再計算する
+  if (state.upgrades.multiShot) {
+    state.doubleShotChance = Math.min(1, state.upgrades.multiShot.level / 100);
+  }
+  state.shotCount = 1;            // legacy: 新仕様で未使用なので 1 に固定
+  state.petShotAdd = 0;           // legacy: 新仕様で未使用
   // スライム所有状態を復元 → 装備中 id を反映 → buff 再計算
   if (snap.slimes) {
     for (const id in snap.slimes) {

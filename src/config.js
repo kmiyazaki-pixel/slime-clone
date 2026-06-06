@@ -42,10 +42,11 @@ export const CONFIG = {
     HIT_RADIUS: 44,          // ボス用の大きめ当たり判定
   },
 
-  // マルチショット
-  MULTI_SHOT: {
-    LV_STEP: 4,              // この Lv ごとに発射数+1
-    SPREAD_DEG: 18,          // 全幅 (両端で ±9度)
+  // ダブルショット (旧マルチショット)
+  // 1発撃った直後に確率で 2発目を撃つ仕様
+  DOUBLE_SHOT: {
+    DELAY_MS: 120,           // 1発目と2発目の間隔
+    PET_BONUS: 0.25,         // pet 'multi' 所有時の追加確率
   },
 
   // クリティカル
@@ -161,11 +162,12 @@ export const CONFIG = {
       damageRatio: 0.3,
     },
     multi: {
-      name: 'マルチ',
+      name: 'ダブル',
       icon: '🐑',
       cost: 15000,
-      desc: '発射数 +1',
-      apply: (s) => { s.petShotAdd += 1; },
+      desc: 'ダブル確率 +25%',
+      // CONFIG 自身の self-reference を避けるため値はハードコード
+      apply: (s) => { s.petDoubleShotAdd += 0.25; },
       fireInterval: 1500,
       damageRatio: 0.3,
     },

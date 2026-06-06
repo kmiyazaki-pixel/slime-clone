@@ -96,7 +96,7 @@ function gameLoop(now) {
   // 敵の移動
   updateEnemies(dt);
 
-  // 自動射撃 (一定間隔で一番近い敵を撃つ。マルチショットなら扇状に)
+  // 自動射撃 (一定間隔で一番近い敵を撃つ。ダブルショット確率で 2発目が遅れて出る)
   // ペットとスライム両方の interval バフを反映
   const effectiveInterval = state.shotInterval * state.petFireRateMul * state.slimeFireRateMul;
   if (now - state.lastShot > effectiveInterval) {

@@ -17,8 +17,9 @@ export const state = {
   attack: 1,
   shotInterval: 600,   // ms
 
-  // Phase 3: マルチショット/クリ/ゴールド/貫通
-  shotCount: 1,        // 同時発射数
+  // Phase 3 → ダブルショットに仕様変更
+  shotCount: 1,        // legacy: 旧マルチショットの同時発射数。新仕様では未使用 (初期値で固定)
+  doubleShotChance: 0.01, // Lv 1 で 1% (level/100、Lv 100 で 100% MAX)
   critChance: 0,       // 0-1
   critMultiplier: 2.0, // クリ時のダメージ倍率
   goldMultiplier: 1.0, // ゴールド報酬の倍率
@@ -31,7 +32,8 @@ export const state = {
   petCritAdd: 0,       // critChance に加算
   petPierceAdd: 0,     // pierceCount に加算
   petFireRateMul: 1,   // shotInterval に掛ける乗算 (小さいほど高速)
-  petShotAdd: 0,       // shotCount に加算
+  petShotAdd: 0,       // legacy: 旧 shotCount 加算。新仕様では未使用
+  petDoubleShotAdd: 0, // doubleShotChance に加算 (ダブルペット所有時 +0.25)
 
   // スライム: 所有マップ + 装備中の id + 装備スライムからのバフ
   // (みどりスライムだけ最初から所有 + 装備済み)
@@ -100,14 +102,14 @@ export const state = {
       },
     },
     multiShot: {
-      name: 'マルチショット',
+      name: 'ダブルショット',
       icon: '🎯',
       level: 1,
       baseCost: 150,
-      costMul: 1.45,
+      costMul: 1.10,            // Lv 100 が無理ゲーにならない伸び (was 1.45)
       apply: (s) => {
-        // Lv 4 ごとに +1発 (Lv4=2発, Lv8=3発...)
-        if (s.upgrades.multiShot.level % 4 === 0) s.shotCount++;
+        // Lv N で N% の確率で 2発目を撃つ。Lv 100 で 100% MAX
+        s.doubleShotChance = Math.min(1, s.upgrades.multiShot.level / 100);
       },
     },
     critRate: {
