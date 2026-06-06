@@ -55,9 +55,9 @@ export const $idleModalCapMsg    = document.getElementById('idleModalCapMsg');
 export const $idleModalGold      = document.getElementById('idleModalGold');
 export const $idleModalClaimBtn  = document.getElementById('idleModalClaimBtn');
 
-// ペットモーダル
-export const $petModal           = document.getElementById('petModal');
-export const $petModalBg         = document.getElementById('petModalBg');
+// ペットパネル (下部ナビ第2タブ)
+export const $upgradePanel       = document.getElementById('upgradePanel');
+export const $petPanel           = document.getElementById('petPanel');
 export const $petGrid            = document.getElementById('petGrid');
-export const $petModalCloseBtn   = document.getElementById('petModalCloseBtn');
-export const $petNavBtn          = document.querySelector('.bottom-nav .nav-btn[data-tab="pet"]');
+export const $petPanelGold       = document.getElementById('petPanelGold');
+export const $petPanelCount      = document.getElementById('petPanelCount');

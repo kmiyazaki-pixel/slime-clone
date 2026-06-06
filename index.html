@@ -111,8 +111,8 @@
     <button class="action-btn skill-btn locked"></button>
   </div>
 
-  <!-- ========= 4. 強化パネル ========= -->
-  <section class="upgrade-panel">
+  <!-- ========= 4a. 強化パネル (forge タブ) ========= -->
+  <section class="upgrade-panel" id="upgradePanel">
     <div class="upgrade-currency-row">
       <div class="up-currency">
         <div class="up-currency-icon"></div>
@@ -120,6 +120,21 @@
       </div>
     </div>
     <div class="upgrades" id="upgrades"></div>
+  </section>
+
+  <!-- ========= 4b. ペットパネル (pet タブ) ========= -->
+  <section class="pet-panel" id="petPanel" hidden>
+    <div class="upgrade-currency-row">
+      <div class="up-currency">
+        <div class="up-currency-icon"></div>
+        <span id="petPanelGold">0</span>
+      </div>
+    </div>
+    <div class="pet-panel-header">
+      <div class="pet-panel-title">ペット</div>
+      <div class="pet-panel-count" id="petPanelCount">0 / 4</div>
+    </div>
+    <div class="pet-grid" id="petGrid"></div>
   </section>
 
   <!-- ========= 放置報酬モーダル ========= -->
@@ -138,17 +153,6 @@
         <div class="idle-modal-gold" id="idleModalGold">0</div>
       </div>
       <button class="idle-modal-claim" id="idleModalClaimBtn">受け取る</button>
-    </div>
-  </div>
-
-  <!-- ========= ペットモーダル ========= -->
-  <div class="pet-modal" id="petModal" hidden>
-    <div class="pet-modal-bg" id="petModalBg"></div>
-    <div class="pet-modal-card">
-      <div class="pet-modal-title">ペット</div>
-      <div class="pet-modal-help">購入したペットは常駐し、効果は永続します</div>
-      <div class="pet-grid" id="petGrid"></div>
-      <button class="pet-modal-close" id="petModalCloseBtn">閉じる</button>
     </div>
   </div>
 

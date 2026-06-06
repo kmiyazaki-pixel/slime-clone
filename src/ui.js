@@ -41,22 +41,23 @@ import {
   $idleModalCapMsg,
   $idleModalGold,
   $idleModalClaimBtn,
-  $petModal,
-  $petModalBg,
+  $upgradePanel,
+  $petPanel,
   $petGrid,
-  $petModalCloseBtn,
-  $petNavBtn,
+  $petPanelGold,
+  $petPanelCount,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
 import { saveGame } from './save.js';
 import { buyPet, getOwnedPetIds } from './pet.js';
 
-// ゴールド表示を最新値に更新 (上部バーと強化パネル上の両方)
+// ゴールド表示を最新値に更新 (上部バー、強化パネル、ペットパネル全部)
 export function updateGoldDisplay() {
   const v = formatNum(state.gold);
   $goldDisplay.textContent = v;
   $upgradeGold.textContent = v;
+  $petPanelGold.textContent = v;
 }
 
 // ジェム表示 (見た目だけ)
@@ -253,18 +254,17 @@ export function setupUI() {
     retryBoss();
   });
 
-  // 下部ナビ: アクティブ切替 + 「ペット」はモーダルを開く
+  // 下部ナビ: タブ切替 (forge / pet は専用パネル、他は forge にフォールバック)
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (btn.dataset.tab === 'pet') openPetModal();
+      const tab = btn.dataset.tab;
+      if (tab === 'pet') {
+        activateTab('pet');
+      } else {
+        activateTab('forge');
+      }
     });
   });
-
-  // ペットモーダル: 閉じる/背景タップ
-  $petModalBg.addEventListener('click', closePetModal);
-  $petModalCloseBtn.addEventListener('click', closePetModal);
 
   // ⚙ ボタンでクラウドセーブ/ログインのモーダルを開く
   $settingsBtn.addEventListener('click', openAuthModal);
@@ -412,20 +412,30 @@ export function showIdleReward(reward) {
 }
 
 // =====================================================
-//  ペット (モーダル + スプライト)
+//  ペット (専用パネル + スプライト)
 // =====================================================
 
-function openPetModal() {
-  $petModal.hidden = false;
-  renderPetGrid();
-}
+// 下部ナビのタブ切替: forge / pet で出すパネルを切り替える
+//   現状ペット以外はぜんぶ強化パネル (forge) にフォールバックする
+function activateTab(tabName) {
+  document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.bottom-nav .nav-btn[data-tab="${tabName}"]`);
+  if (btn) btn.classList.add('active');
 
-function closePetModal() {
-  $petModal.hidden = true;
+  const showPet = tabName === 'pet';
+  $upgradePanel.hidden = showPet;
+  $petPanel.hidden = !showPet;
+
+  if (showPet) renderPetGrid();
 }
 
 // 全体描画 (購入・state 変化のたびに呼ぶ)
 function renderPetGrid() {
+  // 所持数表示も更新
+  const totalCount = Object.keys(CONFIG.PETS).length;
+  const ownedCount = Object.values(state.pets).filter(p => p && p.owned).length;
+  $petPanelCount.textContent = `${ownedCount} / ${totalCount}`;
+
   $petGrid.innerHTML = '';
   for (const [id, def] of Object.entries(CONFIG.PETS)) {
     const owned = !!(state.pets[id] && state.pets[id].owned);
