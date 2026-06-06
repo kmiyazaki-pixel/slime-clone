@@ -37,6 +37,11 @@ export const state = {
   boss: null,          // 現在のボスインスタンス
   bossDefeated: false, // 現ワールドのボスを倒したか (再挑戦ボタン制御)
 
+  // スライムの行動モード (敵集団 → 走る → 次の集団)
+  slimeMode: 'fighting',           // 'fighting' | 'traveling'
+  travelTimer: 0,                  // 残り travel 秒
+  enemiesSpawnedThisStage: 0,      // 今ステージで既に spawn した雑魚数 (上限: killsRequired)
+
   // タイミング
   lastShot: 0,
   lastSpawn: 0,

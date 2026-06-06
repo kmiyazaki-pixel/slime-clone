@@ -152,6 +152,21 @@
   --rock: #1c1917;
 }
 
+/* ========= 移動モード (次の敵集団に向かって走る) ========= */
+/* スクロールを大幅に速める + スライムを前傾でランニング感 */
+.battlefield.traveling .scroll-far { animation-duration: 5s; }
+.battlefield.traveling .scroll-near { animation-duration: 1s; }
+.battlefield.traveling::before { animation-duration: 8s; }
+
+.battlefield.traveling .slime {
+  animation: slimeRun 0.28s ease-in-out infinite alternate;
+}
+
+@keyframes slimeRun {
+  0%   { transform: translateX(0) translateY(0) skewX(-5deg) scaleX(1.08) scaleY(0.95); }
+  100% { transform: translateX(4px) translateY(-3px) skewX(3deg) scaleX(1.02) scaleY(1.02); }
+}
+
 /* ========= スライム ========= */
 .slime {
   position: absolute;

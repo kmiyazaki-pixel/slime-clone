@@ -46,10 +46,28 @@ function gameLoop(now) {
   const dt = Math.min(0.05, (now - lastFrame) / 1000);
   lastFrame = now;
 
-  // 敵スポーン (ボス戦中は止める)
-  if (!state.inBossFight && now - state.lastSpawn > CONFIG.SPAWN_INTERVAL) {
+  // 移動モード (敵集団 → 走る → 次の集団) の状態遷移
+  if (state.slimeMode === 'traveling') {
+    state.travelTimer -= dt;
+    if (state.travelTimer <= 0) {
+      state.slimeMode = 'fighting';
+      state.travelTimer = 0;
+      state.enemiesSpawnedThisStage = 0;
+    }
+  }
+  $battlefield.classList.toggle('traveling', state.slimeMode === 'traveling');
+
+  // 敵スポーン:
+  //   - ボス戦中は止める
+  //   - traveling 中は止める (次の集団に向かって走ってる最中)
+  //   - この stage で killsRequired 体まで spawn したら止める (敵が積み上がらないように)
+  if (!state.inBossFight
+      && state.slimeMode === 'fighting'
+      && state.enemiesSpawnedThisStage < state.killsRequired
+      && now - state.lastSpawn > CONFIG.SPAWN_INTERVAL) {
     state.lastSpawn = now;
     spawnEnemy();
+    state.enemiesSpawnedThisStage++;
   }
 
   // ボスタイマー
@@ -95,6 +113,8 @@ function init() {
 
   // まずセーブから state を復元 (なければデフォルトのまま)
   loadGame();
+  // mid-stage で離脱 → リロードでもその stage で必要な残り体数だけ spawn するように
+  state.enemiesSpawnedThisStage = state.killsInStage;
 
   setPlayerY();
   updatePlayerLv();

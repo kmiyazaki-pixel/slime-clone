@@ -52,15 +52,23 @@ export function onEnemyKilled() {
   updateStageDisplay();
 }
 
+// 「次の敵集団に向かって走る」モードに入る
+export function enterTravelingMode() {
+  state.slimeMode = 'traveling';
+  state.travelTimer = CONFIG.TRAVEL_DURATION;
+  state.enemiesSpawnedThisStage = 0;
+}
+
 // 次のステージへ進む
 export function advanceStage() {
   state.killsInStage = 0;
   if (state.stage < 9) {
     state.stage++;
+    enterTravelingMode();         // 走って次の敵集団へ
     updateStageDisplay();
     saveGame();
   } else if (state.stage === 9) {
-    // Stage 9 完了 → Stage 10 (ボス戦) へ突入
+    // Stage 9 完了 → Stage 10 (ボス戦) へ突入 (ボスは即対面)
     state.stage = 10;
     updateStageDisplay();
     startBossFight();
@@ -100,10 +108,11 @@ export function endBossFight(victory) {
   if (victory) {
     state.bossDefeated = true;
     state.boss = null;
-    // 次のワールドへ
+    // 次のワールドへ → トラベルモードで景色を流す
     state.world++;
     state.stage = 1;
     state.killsInStage = 0;
+    enterTravelingMode();
     hideRetryButton();
   } else {
     // タイムアップ: ボス消滅、再挑戦ボタンを表示

@@ -72,4 +72,7 @@ export const CONFIG = {
     CAP_SECONDS: 8 * 60 * 60,    // 上限 8時間
     EFFICIENCY: 0.5,             // オフライン中は通常プレイの 50% の効率で稼ぐ
   },
+
+  // スライムの移動 (敵集団に向かって走るモード)
+  TRAVEL_DURATION: 1.5,          // ステージ間で travel モードに入っている秒数
 };
