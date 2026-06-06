@@ -107,10 +107,11 @@ export const CONFIG = {
     critTime: {
       name: 'クリタイム',
       icon: '⭐',
-      desc: '5秒間 クリティカル 100%',
+      desc: '5秒間 クリ倍率 ×2',
       cost: 20000,
       cooldown: 25,
       duration: 5,
+      critMulFactor: 2,           // 持続中、state.critMultiplier に掛ける倍率
     },
     goldRush: {
       name: 'ゴールドラッシュ',

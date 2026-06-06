@@ -50,7 +50,7 @@ export const state = {
   skills: {},                                              // { skillId: { owned: bool } }
   skillCooldowns: {},                                      // { skillId: 残秒数 }
   skillBuffsRemaining: { critTime: 0, goldRush: 0 },       // 持続バフの残秒数
-  skillCritOverride: 0,                                    // クリタイム中は 1 (確定クリ)
+  skillCritMul: 1,                                         // クリタイム中は 2 (critMultiplier に乗算)
   skillGoldMul: 1,                                         // ゴールドラッシュ中は 3
 
   // ステージ進行

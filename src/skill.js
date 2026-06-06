@@ -9,7 +9,7 @@
 //     (クリタイム、ゴールドラッシュ) の2 種類
 //   - 持続系は state.skillBuffsRemaining[id] を秒単位で減らし、
 //     0 になったら効果終了
-//   - 派生バフ (skillCritOverride / skillGoldMul) は main.js のループで
+//   - 派生バフ (skillCritMul / skillGoldMul) は tickSkills() の中で
 //     毎フレーム recompute する
 
 import { state } from './state.js';
@@ -118,8 +118,23 @@ export function tickSkills(dt) {
     }
   }
   // 派生バフを再計算
-  state.skillCritOverride = state.skillBuffsRemaining.critTime > 0 ? 1 : 0;
+  state.skillCritMul = state.skillBuffsRemaining.critTime > 0
+    ? CONFIG.SKILLS.critTime.critMulFactor
+    : 1;
   state.skillGoldMul = state.skillBuffsRemaining.goldRush > 0
     ? CONFIG.SKILLS.goldRush.goldMul
     : 1;
+
+  // AUTO ON のときは所有スキルを CD 切れ次第自動発動
+  // (敵が必要なスキルは、敵がいる時だけ)
+  if (state.autoProgress) {
+    const hasEnemy = state.enemies.some(e => e.alive);
+    for (const id in state.skills) {
+      if (!state.skills[id] || !state.skills[id].owned) continue;
+      if ((state.skillCooldowns[id] || 0) > 0) continue;
+      const needsEnemy = id === 'chargeShot' || id === 'meteor';
+      if (needsEnemy && !hasEnemy) continue;
+      useSkill(id);
+    }
+  }
 }

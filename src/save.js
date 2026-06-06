@@ -138,7 +138,7 @@ export function restore(snap) {
   // 念のため CD / 持続バフは初期化
   state.skillCooldowns = {};
   state.skillBuffsRemaining = { critTime: 0, goldRush: 0 };
-  state.skillCritOverride = 0;
+  state.skillCritMul = 1;
   state.skillGoldMul = 1;
   // クリ確率だけ 1.0 で念のためクランプ (倍率は無制限)
   state.critChance = Math.min(1.0, state.critChance);

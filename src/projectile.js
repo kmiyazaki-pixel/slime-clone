@@ -189,11 +189,11 @@ export function updateProjectiles(dt) {
       const dy = tcy - p.y;
 
       if (Math.hypot(dx, dy) < t.hitRadius) {
-        // 命中 (クリ確率はペット + スライム + スキル(クリタイム)のバフを加算)
-        const baseCrit = state.critChance + state.petCritAdd + state.slimeCritAdd;
-        const effectiveCrit = Math.max(baseCrit, state.skillCritOverride);
+        // 命中 (クリ確率はペット + スライムのバフを加算、倍率はスキル(クリタイム)で乗算)
+        const effectiveCrit = state.critChance + state.petCritAdd + state.slimeCritAdd;
         const isCrit = Math.random() < effectiveCrit;
-        const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? state.critMultiplier : 1)));
+        const effectiveCritMul = state.critMultiplier * state.skillCritMul;
+        const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? effectiveCritMul : 1)));
 
         t.hp -= dmg;
         showDamage(t.x + half - 10, t.y, dmg, isCrit);

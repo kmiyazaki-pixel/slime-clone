@@ -350,6 +350,10 @@ export function setupUI() {
       useSkill(id);
     });
   });
+  // 将来用の空スロット (data-skill-empty) もタップでスキルページへ
+  document.querySelectorAll('.skill-btn[data-skill-empty]').forEach(btn => {
+    btn.addEventListener('click', () => activateTab('dungeon'));
+  });
 
   // 強化ボタンの長押し連射: パネルにデリゲート + 文書全体で離した時に停止
   $upgrades.addEventListener('pointerdown', (e) => {
