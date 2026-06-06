@@ -12,6 +12,9 @@
   min-height: 280px;
   border-bottom: 3px solid #000;
   transition: background 0.6s ease;
+  /* 四隅を暗く落とすビネット (奥行き感) */
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.35),
+              inset 0 0 14px rgba(0, 0, 0, 0.2);
 }
 
 /* 地平線 */
@@ -39,6 +42,66 @@
   letter-spacing: 30px;
   animation: cloudDrift 30s linear infinite;
   z-index: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+/* 空の太陽 / 月 (ワールドごとに色変化) */
+.sky-sun {
+  position: absolute;
+  top: 9%;
+  right: 16%;
+  width: 52px;
+  height: 52px;
+  background: radial-gradient(circle, #fff9c2 22%, #fbbf24 55%, rgba(251, 191, 36, 0.45) 75%, transparent 85%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: sunPulse 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.7));
+}
+
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.7)); }
+  50%      { transform: scale(1.08); filter: drop-shadow(0 0 18px rgba(251, 191, 36, 1)); }
+}
+
+/* W2 夕焼け: でっかい赤い太陽 */
+.battlefield[data-world="2"] .sky-sun {
+  background: radial-gradient(circle, #ffedd5 18%, #f97316 50%, rgba(249, 115, 22, 0.5) 78%, transparent 88%);
+  width: 78px;
+  height: 78px;
+  top: 14%;
+  filter: drop-shadow(0 0 22px rgba(249, 115, 22, 0.9));
+}
+
+/* W3 雪山: 白っぽい弱い太陽 */
+.battlefield[data-world="3"] .sky-sun {
+  background: radial-gradient(circle, #ffffff 22%, #cbd5e1 60%, rgba(203, 213, 225, 0.4) 78%, transparent 88%);
+  filter: drop-shadow(0 0 10px rgba(241, 245, 249, 0.6));
+}
+
+/* W4 夜: 三日月 (隣にもう一つ被せて欠けて見せる) */
+.battlefield[data-world="4"] .sky-sun {
+  background: radial-gradient(circle, #f1f5f9 28%, #94a3b8 60%, transparent 75%);
+  width: 46px;
+  height: 46px;
+  filter: drop-shadow(0 0 18px rgba(226, 232, 240, 0.55));
+}
+.battlefield[data-world="4"] .sky-sun::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg-sky, #4c1d95);
+  border-radius: 50%;
+  transform: translateX(32%);
+}
+/* 夜空の星 (キラキラ) */
+.battlefield[data-world="4"]::before {
+  content: '・     ・   ✦      ・   ・    ✦   ・';
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 16px;
+  font-size: 12px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
 }
 
 @keyframes cloudDrift {
@@ -237,14 +300,21 @@
   position: absolute;
   width: 60px;
   height: 50px;
-  background: radial-gradient(ellipse at 35% 30%,
-    var(--slime-highlight, #86efac), var(--slime-body) 50%, var(--slime-shadow));
+  background:
+    /* 一番上の光沢ハイライト (左上の白ぼかし) */
+    radial-gradient(ellipse 38% 28% at 32% 22%, rgba(255,255,255,0.55), transparent 70%),
+    /* 本体グラデ */
+    radial-gradient(ellipse at 35% 30%,
+      var(--slime-highlight, #86efac), var(--slime-body) 50%, var(--slime-shadow));
   border: 3px solid var(--slime-eye, #14532d);
   border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   bottom: 28%;
   left: 60px;
   animation: slimeBounce 0.8s ease-in-out infinite;
   z-index: 5;
+  /* 全体に薄い影と、本体色の弱い光輪 */
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+  box-shadow: 0 0 18px var(--slime-body);
 }
 
 .slime::before,
@@ -252,13 +322,63 @@
   content: '';
   position: absolute;
   top: 35%;
-  width: 8px;
-  height: 10px;
-  background: var(--slime-eye, #14532d);
+  width: 9px;
+  height: 11px;
+  background:
+    /* 黒目に小さい白い反射 */
+    radial-gradient(circle at 28% 28%, rgba(255,255,255,0.95) 28%, transparent 32%),
+    var(--slime-eye, #14532d);
   border-radius: 50%;
 }
 .slime::before { left: 22%; }
 .slime::after  { right: 22%; }
+
+/* 笑顔 */
+.slime-mouth {
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 7px;
+  border: 2.2px solid var(--slime-eye, #14532d);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  background: transparent;
+}
+
+/* 別の追加ハイライト (回転するキラリ感) */
+.slime-shine {
+  position: absolute;
+  top: 12%;
+  left: 22%;
+  width: 14px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.85), transparent 70%);
+  border-radius: 50%;
+  transform: rotate(-22deg);
+  filter: blur(0.8px);
+  pointer-events: none;
+}
+
+/* 地面の影 (スライムが弾むのに合わせて伸縮) */
+.slime-ground-shadow {
+  position: absolute;
+  left: 60px;
+  bottom: 26%;
+  width: 60px;
+  height: 9px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), transparent 70%);
+  border-radius: 50%;
+  z-index: 4;
+  animation: slimeShadow 0.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes slimeShadow {
+  0%, 100% { transform: scaleX(1);    opacity: 0.55; }
+  50%      { transform: scaleX(0.78); opacity: 0.8; }
+}
 
 /* スライムカード用の小さいプレビュー (ペットパネルと同じ .pet-card-icon 枠に入れる) */
 .slime-card-preview {
@@ -324,7 +444,15 @@
 }
 
 .enemy.hit {
-  filter: brightness(2) saturate(2);
+  filter: brightness(2.2) saturate(2)
+          drop-shadow(0 0 14px rgba(255, 255, 255, 0.95))
+          drop-shadow(0 0 6px #fff);
+  animation: hitBurst 0.1s ease-out;
+}
+
+@keyframes hitBurst {
+  0%   { transform: scale(1.22); }
+  100% { transform: scale(1); }
 }
 
 .enemy.dying {
@@ -436,9 +564,15 @@
   position: absolute;
   width: 12px;
   height: 12px;
-  background: radial-gradient(circle, #fff, var(--projectile) 60%, var(--gold));
+  background:
+    radial-gradient(circle, #fff 25%, var(--projectile) 55%, var(--gold) 90%);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--projectile), 0 0 4px #fff;
+  /* 多層 box-shadow で派手に光らせる */
+  box-shadow:
+    0 0 6px #fff,
+    0 0 14px var(--projectile),
+    0 0 28px rgba(254, 243, 199, 0.7),
+    0 0 42px rgba(251, 191, 36, 0.4);
   z-index: 6;
   will-change: left, top;
 }
@@ -447,8 +581,11 @@
 .projectile.pet-projectile {
   width: 8px;
   height: 8px;
-  background: radial-gradient(circle, #fff, #86efac 55%, #15803d);
-  box-shadow: 0 0 7px #4ade80, 0 0 2px #fff;
+  background: radial-gradient(circle, #fff 25%, #86efac 55%, #15803d 90%);
+  box-shadow:
+    0 0 5px #fff,
+    0 0 12px #4ade80,
+    0 0 22px rgba(74, 222, 128, 0.6);
 }
 
 /* ========= ダメージ数 ========= */

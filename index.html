@@ -79,8 +79,15 @@
       <button class="side-skill ss-3"></button>
     </aside>
 
+    <!-- 空の天体 (太陽/月、ワールドごとに色変化) -->
+    <div class="sky-sun"></div>
+
     <!-- プレイヤー (data-slime-type で色を切替) -->
-    <div class="slime" id="slime" data-slime-type="green"></div>
+    <div class="slime-ground-shadow"></div>
+    <div class="slime" id="slime" data-slime-type="green">
+      <div class="slime-shine"></div>
+      <div class="slime-mouth"></div>
+    </div>
 
     <!-- ボスタイマー (中央上、ボス戦中のみ表示) -->
     <div class="boss-timer" id="bossTimer" hidden>
