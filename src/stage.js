@@ -88,6 +88,10 @@ export function startBossFight() {
   state.inBossFight = true;
   state.bossTimer = CONFIG.BOSS.TIMER_SECONDS;
   state.bossDefeated = false;
+  // タイムアウト後に雑魚が spawn できるよう、スポーン枠と kill カウンタをリセット
+  // (ステージ9で 5/5 spawned されたまま残るバグを避ける)
+  state.enemiesSpawnedThisStage = 0;
+  state.killsInStage = 0;
 
   // 残ってる雑魚は消去 (ボス登場とともに画面をクリア)
   removeAllEnemies();
