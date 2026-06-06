@@ -31,11 +31,19 @@ import {
   updateSlimeVisual,
 } from './ui.js';
 
-// プレイヤーの位置を戦場の高さに合わせて設定
+// プレイヤーの位置を「スライムの実 DOM 中心」に合わせる
+//   弾の発射点もここを基準にするので、見た目とぴったり合うようになる
 function setPlayerY() {
-  const fieldH = $battlefield.clientHeight;
-  state.player.y = fieldH * CONFIG.GROUND_RATIO + 20;
-  state.player.x = CONFIG.PLAYER_X;
+  const slime = document.getElementById('slime');
+  if (slime && slime.offsetWidth) {
+    state.player.x = slime.offsetLeft + slime.offsetWidth / 2;
+    state.player.y = slime.offsetTop + slime.offsetHeight / 2;
+  } else {
+    // フォールバック (init で DOM がまだ無い等の予防策)
+    const fieldH = $battlefield.clientHeight;
+    state.player.y = fieldH * CONFIG.GROUND_RATIO + 20;
+    state.player.x = CONFIG.PLAYER_X;
+  }
 }
 
 // =====================================================
@@ -140,7 +148,6 @@ function init() {
   // mid-stage で離脱 → リロードでもその stage で必要な残り体数だけ spawn するように
   state.enemiesSpawnedThisStage = state.killsInStage;
 
-  setPlayerY();
   updatePlayerLv();
   updateGoldDisplay();
   updateGemDisplay();
@@ -151,6 +158,9 @@ function init() {
   renderPetSprites();   // 所有ペットのスプライトを戦場に並べる
   updateSlimeVisual();  // 装備中スライムの色を戦場に反映
   setupUI();
+  // renderUpgrades / renderPetSprites でレイアウトが確定したあとに
+  // スライム DOM の中心位置を player に反映 (= 弾の発射点)
+  setPlayerY();
 
   // ボス戦中にセーブされた = state.stage === 10 なら復帰時にボス戦を再開
   if (state.stage === 10 && !state.inBossFight) {

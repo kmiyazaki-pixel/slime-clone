@@ -10,8 +10,10 @@ import { killEnemy } from './enemy.js';
 
 // ターゲットに向けて弾を発射する公開API
 // state.shotCount に応じて扇形に複数発射
+// 発射点はスライムの中心 (= state.player.x/y は setPlayerY で
+// スライム DOM の中心に合わせてある)
 export function fireAt(target) {
-  const sx = state.player.x + 30;
+  const sx = state.player.x;
   const sy = state.player.y;
   const half = target.size / 2;
   const tcx = target.x + half;
@@ -35,8 +37,18 @@ export function fireAt(target) {
 // ペットの自前攻撃。ペットスプライトの位置から、シンプルな単発弾を撃つ
 // (クリ/貫通/マルチショットは適用しない。state.attack * damageRatio のみ)
 export function firePetAt(target, petIndex, damage) {
-  const sx = 20 + petIndex * 22;   // renderPetSprites と一致させる
-  const sy = state.player.y + (petIndex % 2 === 0 ? 6 : 0);
+  // 実 DOM からペットの中心位置を取る (renderPetSprites の式に依存しない)
+  const sprites = $battlefield.querySelectorAll('.pet-sprite');
+  const petSprite = sprites[petIndex];
+  let sx, sy;
+  if (petSprite) {
+    sx = petSprite.offsetLeft + petSprite.offsetWidth / 2;
+    sy = petSprite.offsetTop + petSprite.offsetHeight / 2;
+  } else {
+    // フォールバック (スプライト未描画の極稀ケース)
+    sx = 20 + petIndex * 22;
+    sy = state.player.y;
+  }
 
   const half = target.size / 2;
   const dx = (target.x + half) - sx;
@@ -70,7 +82,8 @@ export function firePetAt(target, petIndex, damage) {
 }
 
 function spawnSingleProjectile(target, angle) {
-  const sx = state.player.x + 30;
+  // スライム DOM 中心 = state.player.x/y から発射 (setPlayerY で同期)
+  const sx = state.player.x;
   const sy = state.player.y;
   const speed = CONFIG.PROJECTILE.SPEED;
 
