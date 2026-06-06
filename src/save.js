@@ -70,6 +70,12 @@ export function snapshot() {
   }
   data.slimes = ownedSlimes;
   data.activeSlimeId = state.activeSlimeId;
+  // スキルは所有 bool マップだけ保存。CD と持続バフは復元しない (リロードでリセット)
+  const ownedSkills = {};
+  for (const id in state.skills) {
+    ownedSkills[id] = !!(state.skills[id] && state.skills[id].owned);
+  }
+  data.skills = ownedSkills;
   return data;
 }
 
@@ -122,6 +128,18 @@ export function restore(snap) {
     state.activeSlimeId = 'green';
   }
   recomputeSlimeBuffs();
+  // スキル所有を復元 (CD と持続バフは復元しない = リロードでリセット)
+  if (snap.skills) {
+    for (const id in snap.skills) {
+      if (!state.skills[id]) state.skills[id] = { owned: false };
+      state.skills[id].owned = !!snap.skills[id];
+    }
+  }
+  // 念のため CD / 持続バフは初期化
+  state.skillCooldowns = {};
+  state.skillBuffsRemaining = { critTime: 0, goldRush: 0 };
+  state.skillCritOverride = 0;
+  state.skillGoldMul = 1;
   // クリ確率だけ 1.0 で念のためクランプ (倍率は無制限)
   state.critChance = Math.min(1.0, state.critChance);
   if (snap.savedAt) _lastSavedAt = snap.savedAt;

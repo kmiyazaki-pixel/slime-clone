@@ -110,10 +110,22 @@
     <button class="action-btn auto-toggle" id="autoToggle">
       <span class="auto-text">AUTO<br>ON</span>
     </button>
-    <button class="action-btn skill-btn s-power"></button>
-    <button class="action-btn skill-btn s-aim"></button>
-    <button class="action-btn skill-btn s-active"></button>
-    <button class="action-btn skill-btn s-buff"></button>
+    <button class="action-btn skill-btn" data-skill="chargeShot">
+      <span class="skill-icon">💥</span>
+      <span class="skill-cd"></span>
+    </button>
+    <button class="action-btn skill-btn" data-skill="meteor">
+      <span class="skill-icon">☄</span>
+      <span class="skill-cd"></span>
+    </button>
+    <button class="action-btn skill-btn" data-skill="critTime">
+      <span class="skill-icon">⭐</span>
+      <span class="skill-cd"></span>
+    </button>
+    <button class="action-btn skill-btn" data-skill="goldRush">
+      <span class="skill-icon">💰</span>
+      <span class="skill-cd"></span>
+    </button>
     <button class="action-btn skill-btn locked"></button>
     <button class="action-btn skill-btn locked"></button>
   </div>
@@ -127,6 +139,21 @@
       </div>
     </div>
     <div class="upgrades" id="upgrades"></div>
+  </section>
+
+  <!-- ========= 4d. スキルパネル (dungeon タブ = 真ん中) ========= -->
+  <section class="skill-panel" id="skillPanel" hidden>
+    <div class="upgrade-currency-row">
+      <div class="up-currency">
+        <div class="up-currency-icon"></div>
+        <span id="skillPanelGold">0</span>
+      </div>
+    </div>
+    <div class="pet-panel-header">
+      <div class="pet-panel-title">スキル</div>
+      <div class="pet-panel-count" id="skillPanelCount">0 / 4</div>
+    </div>
+    <div class="pet-grid" id="skillGrid"></div>
   </section>
 
   <!-- ========= 4c. スライムパネル (hero タブ = 左端) ========= -->

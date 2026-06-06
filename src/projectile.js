@@ -19,6 +19,39 @@ function aimAngle(target) {
   return Math.atan2(dy, dx);
 }
 
+// スキル「チャージショット」用の特大弾を発射 (damage 直接指定)
+//   - スライム中心から発射、サイズ大きく、見た目で区別する class を付ける
+export function spawnSkillProjectile(target, damage) {
+  const sx = state.player.x;
+  const sy = state.player.y;
+  const angle = aimAngle(target);
+  const speed = CONFIG.PROJECTILE.SPEED * 0.85;
+
+  const p = {
+    id: state._projId++,
+    x: sx,
+    y: sy,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    damage: Math.max(1, Math.floor(damage)),
+    targetId: target.id,
+    hitIds: new Set(),
+    piercesLeft: 99,                // 貫通しまくる
+    life: CONFIG.PROJECTILE.LIFE * 1.5,
+    el: null,
+    isSkill: true,
+  };
+
+  const el = document.createElement('div');
+  el.className = 'projectile skill-projectile';
+  el.style.left = (p.x - 14) + 'px';
+  el.style.top  = (p.y - 14) + 'px';
+  $battlefield.appendChild(el);
+  p.el = el;
+
+  state.projectiles.push(p);
+}
+
 // 2発目以降を遅延予約するヘルパ
 //   targetId が生きてればその敵、死んでたら最寄り敵に当てる
 function scheduleExtraShot(targetId, delayMs) {
@@ -156,8 +189,10 @@ export function updateProjectiles(dt) {
       const dy = tcy - p.y;
 
       if (Math.hypot(dx, dy) < t.hitRadius) {
-        // 命中 (クリ確率はペット + スライムのバフを加算)
-        const isCrit = Math.random() < (state.critChance + state.petCritAdd + state.slimeCritAdd);
+        // 命中 (クリ確率はペット + スライム + スキル(クリタイム)のバフを加算)
+        const baseCrit = state.critChance + state.petCritAdd + state.slimeCritAdd;
+        const effectiveCrit = Math.max(baseCrit, state.skillCritOverride);
+        const isCrit = Math.random() < effectiveCrit;
         const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? state.critMultiplier : 1)));
 
         t.hp -= dmg;

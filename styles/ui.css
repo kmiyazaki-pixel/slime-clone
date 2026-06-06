@@ -923,10 +923,11 @@
 }
 
 /* ============================================================
-   6b. ペットパネル / スライムパネル (下部ナビ第1/2タブ専用)
+   6b. ペット / スライム / スキル パネル (下部ナビ専用)
    ============================================================ */
 .pet-panel,
-.slime-panel {
+.slime-panel,
+.skill-panel {
   background: linear-gradient(180deg, #6b4f37, #4a3526);
   border-top: 3px solid var(--frame);
   border-bottom: 3px solid var(--frame);
@@ -1103,6 +1104,85 @@
   padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* スキルカード固有: CD 表示 */
+.skill-card-cd {
+  font-family: 'DotGothic16', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #1e293b;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+  padding: 1px 6px;
+  letter-spacing: 1px;
+}
+
+/* アクションバーのスキルボタン (data-skill 付き) の状態別スタイル */
+.skill-btn[data-skill] {
+  position: relative;
+  background: radial-gradient(circle at 30% 25%, #cbd5e1, #475569 60%, #1e293b);
+  border-color: #1a0f04;
+}
+
+.skill-btn[data-skill] .skill-icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.4));
+}
+
+.skill-btn[data-skill] .skill-cd {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 50%;
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  font-weight: 900;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+/* 未所有: グレーアウト + 鍵風 */
+.skill-btn[data-skill].skill-locked {
+  filter: grayscale(0.8) brightness(0.55);
+}
+.skill-btn[data-skill].skill-locked::after {
+  content: '🔒';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* 所有 + 発動可: 明るく + 脈動 */
+.skill-btn[data-skill].skill-ready {
+  background: radial-gradient(circle at 30% 25%, #fef9c3, #f59e0b 60%, #b45309);
+  border-color: #78350f;
+  box-shadow: 0 3px 0 #78350f,
+              inset 0 -3px 0 rgba(0, 0, 0, 0.2),
+              0 0 12px rgba(251, 191, 36, 0.65);
+  animation: skillReadyPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes skillReadyPulse {
+  0%, 100% { box-shadow: 0 3px 0 #78350f, inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 12px rgba(251, 191, 36, 0.65); }
+  50%      { box-shadow: 0 3px 0 #78350f, inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 22px rgba(251, 191, 36, 1); }
+}
+
+/* 所有 + CD 中: 暗くなって CD 数字オーバーレイ */
+.skill-btn[data-skill].skill-on-cd {
+  filter: brightness(0.6) saturate(0.7);
+}
+.skill-btn[data-skill].skill-on-cd .skill-cd {
+  display: flex;
 }
 
 /* ============================================================

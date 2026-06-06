@@ -46,6 +46,13 @@ export const state = {
   slimeGoldMul: 1,     // goldMultiplier 乗算
   slimeCritAdd: 0,     // critChance 加算
 
+  // スキル: 所有マップ、各スキルの再使用待機秒数、バフ残時間
+  skills: {},                                              // { skillId: { owned: bool } }
+  skillCooldowns: {},                                      // { skillId: 残秒数 }
+  skillBuffsRemaining: { critTime: 0, goldRush: 0 },       // 持続バフの残秒数
+  skillCritOverride: 0,                                    // クリタイム中は 1 (確定クリ)
+  skillGoldMul: 1,                                         // ゴールドラッシュ中は 3
+
   // ステージ進行
   world: 1,
   stage: 1,

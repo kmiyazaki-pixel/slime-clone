@@ -588,6 +588,24 @@
     0 0 22px rgba(74, 222, 128, 0.6);
 }
 
+/* スキル「チャージショット」の特大弾 (オレンジ + 火花) */
+.projectile.skill-projectile {
+  width: 28px;
+  height: 28px;
+  background:
+    radial-gradient(circle, #fff 18%, #fbbf24 35%, #f97316 65%, #b91c1c 90%);
+  box-shadow:
+    0 0 10px #fff,
+    0 0 26px #f97316,
+    0 0 50px rgba(251, 146, 60, 0.7);
+  animation: skillProjSpin 0.4s linear infinite;
+}
+
+@keyframes skillProjSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ========= ダメージ数 ========= */
 .dmg-num {
   position: absolute;

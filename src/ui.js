@@ -51,20 +51,26 @@ import {
   $slimePanelGold,
   $slimePanelCount,
   $slime,
+  $skillPanel,
+  $skillGrid,
+  $skillPanelGold,
+  $skillPanelCount,
 } from './dom.js';
 import { formatNum, upgradeCost } from './utils.js';
 import { retryBoss } from './stage.js';
 import { saveGame } from './save.js';
 import { buyPet, getOwnedPetIds } from './pet.js';
 import { buySlime, equipSlime } from './slime.js';
+import { buySkill, useSkill, isSkillReady } from './skill.js';
 
-// ゴールド表示を最新値に更新 (上部バー、強化パネル、ペットパネル、スライムパネル)
+// ゴールド表示を最新値に更新 (上部バー、強化パネル、ペット、スライム、スキル)
 export function updateGoldDisplay() {
   const v = formatNum(state.gold);
   $goldDisplay.textContent = v;
   $upgradeGold.textContent = v;
   $petPanelGold.textContent = v;
   $slimePanelGold.textContent = v;
+  $skillPanelGold.textContent = v;
 }
 
 // ジェム表示 (見た目だけ)
@@ -198,7 +204,7 @@ function buyUpgrade(key) {
 }
 
 // ボタンの有効/無効だけを軽く更新 (毎フレーム再描画は重いので)
-// 強化 + ペット購入 + スライム購入 のボタンを全部対象にする
+// 強化 + ペット購入 + スライム購入 + スキル購入 のボタンを全部対象にする
 export function refreshUpgradeButtons() {
   $upgrades.querySelectorAll('button[data-key]').forEach(btn => {
     const key = btn.dataset.key;
@@ -215,6 +221,12 @@ export function refreshUpgradeButtons() {
   $slimeGrid.querySelectorAll('button[data-action="buy"]').forEach(btn => {
     const id = btn.dataset.slimeId;
     const def = CONFIG.SLIMES[id];
+    if (def) btn.disabled = state.gold < def.cost;
+  });
+  // スキル購入ボタン
+  $skillGrid.querySelectorAll('button[data-skill-id]').forEach(btn => {
+    const id = btn.dataset.skillId;
+    const def = CONFIG.SKILLS[id];
     if (def) btn.disabled = state.gold < def.cost;
   });
 }
@@ -314,15 +326,28 @@ export function setupUI() {
     retryBoss();
   });
 
-  // 下部ナビ: タブ切替 (hero=スライム / pet=ペット / forge=強化、他はforgeにフォールバック)
+  // 下部ナビ: タブ切替 (hero=スライム / pet=ペット / dungeon=スキル / forge=強化)
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
-      if (tab === 'hero' || tab === 'pet') {
+      if (tab === 'hero' || tab === 'pet' || tab === 'dungeon') {
         activateTab(tab);
       } else {
         activateTab('forge');
       }
+    });
+  });
+
+  // アクションバーのスキルボタン: タップで発動
+  document.querySelectorAll('.skill-btn[data-skill]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.skill;
+      if (!state.skills[id] || !state.skills[id].owned) {
+        // 未所有 → スキルパネルを開いて誘導
+        activateTab('dungeon');
+        return;
+      }
+      useSkill(id);
     });
   });
 
@@ -486,8 +511,8 @@ export function showIdleReward(reward) {
 //  ペット (専用パネル + スプライト)
 // =====================================================
 
-// 下部ナビのタブ切替: hero / pet / forge で出すパネルを切り替える
-//   その他 (dungeon / shop) はぜんぶ強化パネル (forge) にフォールバックする
+// 下部ナビのタブ切替: hero / pet / dungeon / forge で出すパネルを切り替える
+//   その他 (shop) はぜんぶ強化パネル (forge) にフォールバックする
 function activateTab(tabName) {
   document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`.bottom-nav .nav-btn[data-tab="${tabName}"]`);
@@ -495,12 +520,15 @@ function activateTab(tabName) {
 
   const showPet = tabName === 'pet';
   const showHero = tabName === 'hero';
-  $upgradePanel.hidden = showPet || showHero;
+  const showSkill = tabName === 'dungeon';
+  $upgradePanel.hidden = showPet || showHero || showSkill;
   $petPanel.hidden = !showPet;
   $slimePanel.hidden = !showHero;
+  $skillPanel.hidden = !showSkill;
 
   if (showPet) renderPetGrid();
   if (showHero) renderSlimeGrid();
+  if (showSkill) renderSkillGrid();
 }
 
 // 全体描画 (購入・state 変化のたびに呼ぶ)
@@ -627,6 +655,77 @@ function handleEquipSlime(slimeId) {
   updateSlimeVisual();
   renderSlimeGrid();
   saveGame();
+}
+
+// =====================================================
+//  スキル選択パネル (中央タブ = dungeon) + アクションバー視覚
+// =====================================================
+
+function renderSkillGrid() {
+  const totalCount = Object.keys(CONFIG.SKILLS).length;
+  const ownedCount = Object.values(state.skills).filter(s => s && s.owned).length;
+  $skillPanelCount.textContent = `${ownedCount} / ${totalCount}`;
+
+  $skillGrid.innerHTML = '';
+  for (const [id, def] of Object.entries(CONFIG.SKILLS)) {
+    const owned = !!(state.skills[id] && state.skills[id].owned);
+    const canAfford = state.gold >= def.cost;
+
+    const card = document.createElement('div');
+    card.className = 'pet-card skill-card' + (owned ? ' owned' : '');
+
+    let action;
+    if (owned) {
+      action = `<div class="pet-card-owned-label">所有</div>`;
+    } else {
+      action = `<button class="pet-card-buy" data-skill-id="${id}" ${canAfford ? '' : 'disabled'}>
+        <div class="pet-card-buy-label">購入</div>
+        <div class="pet-card-buy-cost"><span class="coin-icon-mini"></span>${formatNum(def.cost)}</div>
+      </button>`;
+    }
+
+    card.innerHTML = `
+      <div class="pet-card-icon">${def.icon}</div>
+      <div class="pet-card-name">${def.name}</div>
+      <div class="pet-card-desc">${def.desc}</div>
+      <div class="skill-card-cd">CD ${def.cooldown}s</div>
+      ${action}
+    `;
+
+    if (!owned) {
+      card.addEventListener('click', () => {
+        if (state.gold >= def.cost && !state.skills[id]?.owned) handleBuySkill(id);
+      });
+    }
+    $skillGrid.appendChild(card);
+  }
+}
+
+function handleBuySkill(id) {
+  if (!buySkill(id)) return;
+  updateGoldDisplay();
+  renderSkillGrid();
+  updateActionBarSkillUI();
+  saveGame();
+}
+
+// アクションバーのスキルボタンの状態を毎フレーム反映:
+//   - 未所有 → locked クラス
+//   - 所有 + CD中 → cd 残秒数表示、暗くする
+//   - 所有 + 発動可 → 明るくする
+export function updateActionBarSkillUI() {
+  document.querySelectorAll('.skill-btn[data-skill]').forEach(btn => {
+    const id = btn.dataset.skill;
+    const owned = !!(state.skills[id] && state.skills[id].owned);
+    const cd = state.skillCooldowns[id] || 0;
+    btn.classList.toggle('skill-locked', !owned);
+    btn.classList.toggle('skill-on-cd', owned && cd > 0);
+    btn.classList.toggle('skill-ready', owned && cd <= 0);
+    const cdEl = btn.querySelector('.skill-cd');
+    if (cdEl) {
+      cdEl.textContent = owned && cd > 0 ? Math.ceil(cd) : '';
+    }
+  });
 }
 
 // 戦場に所有ペットのスプライトを並べる (購入時 + ロード時に呼ぶ)

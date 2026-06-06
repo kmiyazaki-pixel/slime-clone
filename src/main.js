@@ -8,6 +8,7 @@ import { $battlefield } from './dom.js';
 import { spawnEnemy, findNearestEnemy, updateEnemies } from './enemy.js';
 import { fireAt, firePetAt, updateProjectiles } from './projectile.js';
 import { getOwnedPetIds } from './pet.js';
+import { tickSkills } from './skill.js';
 import { endBossFight, startBossFight } from './stage.js';
 import { bindUI } from './effects.js';
 import { saveGame, loadGame, bindCloud as bindCloudSave, getLastSavedTime } from './save.js';
@@ -29,6 +30,7 @@ import {
   showIdleReward,
   renderPetSprites,
   updateSlimeVisual,
+  updateActionBarSkillUI,
 } from './ui.js';
 
 // プレイヤーの位置を「スライムの実 DOM 中心」に合わせる
@@ -92,6 +94,10 @@ function gameLoop(now) {
 
   // 放置タイマー (見た目用)
   state.idleSeconds += dt;
+
+  // スキルのクールダウンと持続バフを進める + アクションバーの表示も同期
+  tickSkills(dt);
+  updateActionBarSkillUI();
 
   // 敵の移動
   updateEnemies(dt);
@@ -157,6 +163,7 @@ function init() {
   renderUpgrades();
   renderPetSprites();   // 所有ペットのスプライトを戦場に並べる
   updateSlimeVisual();  // 装備中スライムの色を戦場に反映
+  updateActionBarSkillUI(); // 所有スキルのボタンを初期状態にする
   setupUI();
   // renderUpgrades / renderPetSprites でレイアウトが確定したあとに
   // スライム DOM の中心位置を player に反映 (= 弾の発射点)

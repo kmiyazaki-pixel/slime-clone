@@ -84,6 +84,45 @@ export const CONFIG = {
   // スライムの移動 (敵集団に向かって走るモード)
   TRAVEL_DURATION: 1.5,          // ステージ間で travel モードに入っている秒数
 
+  // スキル (アクティブ発動。所有=アクションバーに常駐、タップで使用)
+  // チャージショット (一発系) / メテオ (範囲攻撃) / クリタイム (バフ系) /
+  // ゴールドラッシュ (リソース系) の 4 種
+  SKILLS: {
+    chargeShot: {
+      name: 'チャージショット',
+      icon: '💥',
+      desc: '攻撃×10 の大弾を 1発',
+      cost: 3000,
+      cooldown: 10,         // 秒
+      damageMul: 10,
+    },
+    meteor: {
+      name: 'メテオ',
+      icon: '☄',
+      desc: '画面の全敵に最大HP 50% ダメ',
+      cost: 10000,
+      cooldown: 30,
+      hpRatioDmg: 0.5,
+    },
+    critTime: {
+      name: 'クリタイム',
+      icon: '⭐',
+      desc: '5秒間 クリティカル 100%',
+      cost: 20000,
+      cooldown: 25,
+      duration: 5,
+    },
+    goldRush: {
+      name: 'ゴールドラッシュ',
+      icon: '💰',
+      desc: '10秒間 ゴールド×3',
+      cost: 40000,
+      cooldown: 45,
+      duration: 10,
+      goldMul: 3,
+    },
+  },
+
   // スライムの種類 (装備中の1体だけバフが効く)
   // colors は battle.css の .slime[data-type=id] と対応
   SLIMES: {

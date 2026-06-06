@@ -153,8 +153,8 @@ export function killEnemy(e) {
   e.alive = false;
   e.el.classList.add('dying');
 
-  // ペットとスライム両方のゴールドバフを反映
-  const m = state.goldMultiplier * state.petGoldMul * state.slimeGoldMul;
+  // ペット/スライム/スキル(ゴールドラッシュ) のゴールドバフを反映
+  const m = state.goldMultiplier * state.petGoldMul * state.slimeGoldMul * state.skillGoldMul;
   spawnGoldDrop(e.x + 10, e.y + 10, Math.floor(e.reward * m));
 
   // ボスは派手に: 複数のゴールド粒子を散らす

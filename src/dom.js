@@ -67,3 +67,9 @@ export const $slimePanel         = document.getElementById('slimePanel');
 export const $slimeGrid          = document.getElementById('slimeGrid');
 export const $slimePanelGold     = document.getElementById('slimePanelGold');
 export const $slimePanelCount    = document.getElementById('slimePanelCount');
+
+// スキルパネル (下部ナビ第3タブ = 真ん中)
+export const $skillPanel         = document.getElementById('skillPanel');
+export const $skillGrid          = document.getElementById('skillGrid');
+export const $skillPanelGold     = document.getElementById('skillPanelGold');
+export const $skillPanelCount    = document.getElementById('skillPanelCount');
