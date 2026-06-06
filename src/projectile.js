@@ -122,10 +122,9 @@ export function updateProjectiles(dt) {
       const dy = tcy - p.y;
 
       if (Math.hypot(dx, dy) < t.hitRadius) {
-        // 命中 (クリ確率はペットバフを加算。クリ倍率は cap 2.0 を超えない)
+        // 命中 (クリ確率はペットバフを加算)
         const isCrit = Math.random() < (state.critChance + state.petCritAdd);
-        const critMul = Math.min(2.0, state.critMultiplier);
-        const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? critMul : 1)));
+        const dmg = Math.max(1, Math.floor(p.damage * (isCrit ? state.critMultiplier : 1)));
 
         t.hp -= dmg;
         showDamage(t.x + half - 10, t.y, dmg, isCrit);

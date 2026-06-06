@@ -118,8 +118,7 @@ export const state = {
       baseCost: 120,
       costMul: 1.25,
       apply: (s) => {
-        // 上限 2.0x (= +100% ダメージ) を超えないようにする
-        s.critMultiplier = Math.min(2.0, s.critMultiplier + 0.2);
+        s.critMultiplier += 0.2;
       },
     },
     goldBoost: {

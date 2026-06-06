@@ -106,7 +106,6 @@ function getStatName(key) {
 // 強化が cap (上限) に達してるか
 function isUpgradeMaxed(key) {
   if (key === 'critRate') return state.critChance >= 1.0;
-  if (key === 'critDmg')  return state.critMultiplier >= 2.0;
   return false;
 }
 
